@@ -1,0 +1,15 @@
+
+
+.TAF{
+    display: grid;
+    grid-template-columns: repeat(2, 300px);
+}
+
+.TAF .gridCage{
+    display: flex; 
+    align-items: center;
+}
+.TAF .gridCage .input{
+    margin-left: auto;
+    margin-right: 80px;
+}

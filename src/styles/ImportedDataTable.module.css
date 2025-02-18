@@ -1,0 +1,37 @@
+table{
+    border-collapse: collapses;
+    font-size: 20px;
+}
+td{
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.ImportedDataTable{
+    font-size: 20px
+}
+
+.tableInput{
+    border: none;
+    height: 30px;
+    max-width: 100px;
+    padding: 0;
+    font-size: 20px
+}
+
+.pointsInput{
+    height: 30px;
+    width: 50px;
+    padding: 0;
+}
+
+.tableInput:focus{
+    border: none;
+}
+
+.inputSection{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
