@@ -1,6 +1,7 @@
 import App from "../App";
 import avgValuesTable from "../pages/AvgValuesTable";
 import ImportedDataTable from "../pages/ImportedDataTable";
+import Recalc from "../pages/Recalc";
 
 export const routes = [
     {
@@ -10,5 +11,9 @@ export const routes = [
     {
         path: '/avgValues',
         Element: avgValuesTable
+    },
+    {
+        path: '/recalc',
+        Element: Recalc
     }
 ]

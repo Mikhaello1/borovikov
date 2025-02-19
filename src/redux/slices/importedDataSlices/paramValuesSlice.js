@@ -15,8 +15,9 @@ const paramValuesSlice = createSlice({
     reducers: {
         setParamData: (state, action) => {
             const {educ, control} = action.payload
-            if (educ) state.educ = educ;
-            if (control) state.control = control;
+            
+            if (educ.length) state.educ = educ;
+            if (control.length) state.control = control;
         },
         setEducParamPoints: (state, action) => {
             const { newLength, numOfFactorPoints, numOfWorkTimePoints } = action.payload
@@ -47,8 +48,8 @@ const paramValuesSlice = createSlice({
         },
         updateEducParamValue: (state, action) => {
             const { value, rowIndex, columnIndex, indexInArr } = action.payload;
-            const newEducRow = [...state.educ[rowIndex]];
-            newEducRow[indexInArr] = [...newEducRow[indexInArr]];
+            
+            const newEducRow = state.educ[rowIndex];
             newEducRow[indexInArr][columnIndex] = value;
             state.educ[rowIndex] = newEducRow;
 
@@ -56,9 +57,8 @@ const paramValuesSlice = createSlice({
         },
         updateControlParamValue: (state, action) => {
             const { value, rowIndex, columnIndex, indexInArr } = action.payload;
-            console.log(value, rowIndex, columnIndex, indexInArr)
-            const newControlRow = [...state.control[rowIndex]];
-            newControlRow[indexInArr] = [...newControlRow[indexInArr]];
+            
+            const newControlRow = state.control[rowIndex];
             newControlRow[indexInArr][columnIndex] = value;
             state.control[rowIndex] = newControlRow;
         }

@@ -5,7 +5,6 @@ export default function findBestFitModel(xValues, yValues) {
 
     const points = transformPoints(xValues, yValues)
 
-    console.log(points)
 
     if (points.length <= 2) {
         return "Недостаточно данных для анализа";
@@ -26,7 +25,7 @@ export default function findBestFitModel(xValues, yValues) {
     return {
         type: bestModel.name,
         formula: bestModel.equation,
-        model: bestModel.model,
+        // model: bestModel.model,
         r2: bestModel.r2.toFixed(4),
         a: bestModel.a,
         b: bestModel.b,

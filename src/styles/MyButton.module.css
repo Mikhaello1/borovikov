@@ -1,0 +1,16 @@
+.MyButton{
+    font-size: 20px;
+    padding: 10px;
+    background-color: #3fff39;
+    color: white;
+    border-radius: 20px;
+    border: none;
+}
+
+.MyButton:disabled{
+    background-color: #87ff83;
+}
+
+.MyButton:hover{
+    cursor: pointer;
+}

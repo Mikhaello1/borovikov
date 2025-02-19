@@ -13,7 +13,7 @@ function MathModel({xValues, yValues, factorName, setMathModelValue}) {
         dispatch(setMathModelValue(findBestFitModel(xValues, yValues)))
     };
 
-    console.log(model)
+    
 
     return (
         <div>

@@ -14,6 +14,7 @@ import { calcAverages } from "../helpers/calcAverages";
 import { setFactorAverages, setWorkTimeAverages } from "../redux/slices/avgValuesSlice"
 import ExcelImporter from "../components/ExcelImport";
 import { useNavigate } from "react-router";
+import MyButton from "../components/UI/MyButton";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -23,6 +24,8 @@ export default function ImportedDataTable() {
     const educParamData = useSelector((state) => state.paramData.educ);
     const controlParamData = useSelector((state) => state.paramData.control);
     const paramData = useSelector((state) => state.paramData)
+
+
     let navigate = useNavigate()
 
     const handleHandInput = () => {
@@ -36,10 +39,8 @@ export default function ImportedDataTable() {
 
     const handleInputChange = (e, setValue, index, indexInArr) => {
         let newValue = e.currentTarget.value || 0;
-
-        if(indexInArr) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
+        if(indexInArr !== undefined) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
         else dispatch(setValue({value: newValue, index}))
-        console.log(educParamData)
     };
 
     const handleChangeNumOfInstances = (value, setValue) => {
@@ -97,9 +98,9 @@ export default function ImportedDataTable() {
     };
 
     const handleGetAvgValues = () => {
-        console.log(paramData)
+
         let averages = calcAverages(paramData)
-        console.log(averages)
+
         dispatch(setFactorAverages(averages[0]))
         dispatch(setWorkTimeAverages(averages[1]))
 
@@ -109,7 +110,7 @@ export default function ImportedDataTable() {
 
     const handleControlSample = (event) => {
         const isChecked = event.target.checked;
-        console.log(isChecked);
+        
         let newArr = [];
 
         if (isChecked) {
@@ -122,10 +123,10 @@ export default function ImportedDataTable() {
     return (
         <>
             <ExcelImporter/>
-            <button onClick={handleHandInput} disabled={educParamData.length > 0}>
+            <button onClick={handleHandInput} disabled={educParamData.length}>
                 Ручной ввод
             </button>
-            {educParamData?.length && (
+            {educParamData?.length ? (
                 <div className={styles.ImportedDataTable}>
                     <input type="checkbox" checked={controlParamData.length > 0} onChange={(e) => handleControlSample(e)} />
                     наличие контрольной выборки<br/>
@@ -222,7 +223,7 @@ export default function ImportedDataTable() {
                                     ))}
                                 </tr>
                             ))}
-                            {controlParamData.length > 0 && (
+                            {controlParamData.length > 0 ? (
                                 <>
                                     <tr>
                                         <td colSpan={1000}>экземпляры контрольной выборки</td>
@@ -255,13 +256,18 @@ export default function ImportedDataTable() {
                                         );
                                     })}
                                 </>
-                            )}
+                            ) : null}
                         </tbody>
                     </table>
                 </div>
-            )}
+            ) : null}
 
-            <button onClick={handleGetAvgValues}>Получить таблицу средних значений</button>
+            <MyButton 
+                onClick={handleGetAvgValues}
+                text={"Получить таблицу средних значений"}
+                disabled={!educParamData.length}
+                
+            />
         </>
     );
 }

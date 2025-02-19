@@ -1,10 +1,17 @@
+import { functionModels } from "./functionModels"
 
-export default function recalcValues(tValues, recalcModel, XYModel, numPoints){
 
-    // console.log(recalcModel)
+function getFunctionModel(type){
+    return functionModels[type]
+}
+
+export default function recalcValues(tValues, recalcModel, XYModel){
+
     
-    let recalcFactorValues = tValues.map(value => recalcModel.model(value).toFixed(3))
-    let recalcYParamValues = recalcFactorValues.map(value => XYModel.model(value).toFixed(3))
+    
+    
+    let recalcFactorValues = tValues.map(value => getFunctionModel(recalcModel.type)(value).toFixed(3))
+    let recalcYParamValues = recalcFactorValues.map(value => getFunctionModel(XYModel.tye)(value).toFixed(3))
 
     return{
         recalcFactorValues, 

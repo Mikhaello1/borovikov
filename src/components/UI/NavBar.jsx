@@ -7,7 +7,7 @@ export default function NavBar(){
         <nav className={styles.NavBar}>
             <NavLink to='/'>Ввод данных</NavLink>
             <NavLink to='/avgValues'>Средние значения</NavLink>
-            <NavLink></NavLink>
+            <NavLink to='/recalc'>Значения пересчёта</NavLink>
             <NavLink></NavLink>
         </nav>
     )

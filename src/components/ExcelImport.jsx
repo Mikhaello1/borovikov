@@ -23,8 +23,11 @@ const ExcelImporter = () => {
 
             currencyData.length && dispatch(setFactorData(currencyData));
             workTimeData.length && dispatch(setWorkTimeData(workTimeData));
+
             
-            if (paramData.educ) {
+            
+            if (paramData.educ.length) {
+                
                 dispatch(
                     setParamData({
                         educ: paramData.educ,
@@ -32,7 +35,7 @@ const ExcelImporter = () => {
                     })
                 );
             }
-            if (paramData.control) {
+            if (paramData.control.length) {
                 dispatch(
                     setParamData({
                         educ: paramData.educ,
@@ -124,7 +127,6 @@ const ExcelImporter = () => {
             }
         }
 
-        console.log(jsonData);
 
         for (let i = 1; i < jsonData[1].length; i++) {
             let total = 0;

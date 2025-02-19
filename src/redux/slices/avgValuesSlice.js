@@ -9,7 +9,7 @@ const initialState = {
 }
 
 const avgValuesSlice = createSlice({
-    name: "avgValuesSlice",
+    name: "avgValues",
     initialState,
     reducers: {
         setFactorAverages: (state, action) => {

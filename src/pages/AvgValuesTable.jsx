@@ -43,7 +43,6 @@ function AvgValuesTable() {
     const avgWorkTimeValues = useSelector((state) => state.avgValuesData.workTimeAverages);
     const currencyData = useSelector((state) => state.factorData.values);
     const workTimeData = useSelector((state) => state.workTimeData.values);
-    console.log(currencyData)
 
     return (
         <div className={styles.avgValuesMain}>
