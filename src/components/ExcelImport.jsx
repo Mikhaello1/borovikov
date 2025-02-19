@@ -88,7 +88,7 @@ const ExcelImporter = () => {
             }
             rowIndex++;
         }
-
+        
         rowIndex = 0; // Сброс индекса для контрольных параметров
 
         // Обработка контрольных параметров
@@ -100,9 +100,8 @@ const ExcelImporter = () => {
             rowIndex++;
         }
 
-        let newEduc = educ.map(arr => [arr.slice(0, points.factorPoints), arr.slice(points.factor, points.workTimePoints)])
-        let newControl = control.map(arr => [arr.slice(0, points.factorPoints), arr.slice(points.factor, points.workTimePoints)])
-
+        let newEduc = educ.map(arr => [arr.slice(0, points.factorPoints), arr.slice(points.factorPoints, points.workTimePoints + points.factorPoints)])
+        let newControl = control.map(arr => [arr.slice(0, points.factorPoints), arr.slice(points.factorPoints, points.workTimePoints + points.factorPoints)])
 
         return {
             educ: newEduc,

@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from "react";
-import findBestFitModel from "../helpers/fitModel";
 import { useDispatch, useSelector } from "react-redux";
+import { findBestModel } from "../helpers/findBestModel";
 
 function MathModel({xValues, yValues, factorName, setMathModelValue}) {
     const whatModel = factorName == 'ток коллектора' ? 'factorMathModel' : factorName == 'наработка' ? 'workTimeMathModel' : 'recalcMathModel'
@@ -10,7 +10,8 @@ function MathModel({xValues, yValues, factorName, setMathModelValue}) {
     const model = useSelector(state => state.mathModels[whatModel])
 
     const handleCreateModel = () => {
-        dispatch(setMathModelValue(findBestFitModel(xValues, yValues)))
+        console.log(findBestModel(xValues, yValues))
+        dispatch(setMathModelValue(findBestModel(xValues, yValues)))
     };
 
     

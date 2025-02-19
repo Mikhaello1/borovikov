@@ -15,6 +15,7 @@ import { setFactorAverages, setWorkTimeAverages } from "../redux/slices/avgValue
 import ExcelImporter from "../components/ExcelImport";
 import { useNavigate } from "react-router";
 import MyButton from "../components/UI/MyButton";
+import roundNums from "../helpers/roundNums";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -39,6 +40,7 @@ export default function ImportedDataTable() {
 
     const handleInputChange = (e, setValue, index, indexInArr) => {
         let newValue = e.currentTarget.value || 0;
+        console.log(newValue)
         if(indexInArr !== undefined) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
         else dispatch(setValue({value: newValue, index}))
     };
@@ -100,9 +102,12 @@ export default function ImportedDataTable() {
     const handleGetAvgValues = () => {
 
         let averages = calcAverages(paramData)
+        console.log(averages)
+        let normAverages = roundNums(averages)
+        console.log(normAverages)
 
-        dispatch(setFactorAverages(averages[0]))
-        dispatch(setWorkTimeAverages(averages[1]))
+        dispatch(setFactorAverages(normAverages[0]))
+        dispatch(setWorkTimeAverages(normAverages[1]))
 
         navigate('/avgValues')
         

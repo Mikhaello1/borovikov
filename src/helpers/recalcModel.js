@@ -11,14 +11,14 @@ export default function recalcModel(YXModel, YZModel) {
     if (YXModel.type == "linear") {
         if (c1 !== 0) c2 -= c1;
         if (a1 !== 1) {
-            [a2, b2, c2] = [a2, b2, c2].map((x) => x / a1);
+            [a2, b2, c2].forEach((x) => x / a1);
         }
         if (b1 != 1) {
-            [a2, b2, c2] = [a2, b2, c2].map((x) => x ** b1);
+            [a2, b2, c2].forEach((x) => x ** b1);
         }
         return {
             type: YZModel.type,
-            formula: `x(z) = ${a2 !== 1 ? a2 : ""}z ${c2 !== 0 && c2 < 0 ? c2 : `+ ${c2}`}`,
+            formula: `x(z) = ${a2 !== 1 && a2}z ${c2 !== 0 && c2 < 0 ? c2 : `+ ${c2}`}`,
             // model: x => a2 * x + c2,
             a: a2,
             b: b2,

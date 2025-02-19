@@ -48,9 +48,11 @@ function linearRegression(points) {
     let a = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     let c = (sumY - a * sumX) / n;
 
+    
+
     return {
         name: "linear",
-        equation: `y = ${a.toFixed(3)}x ${c < 0 ? c.toFixed(3) : `+${c.toFixed(3)}`}`,
+        equation: `y = ${a.toFixed(3)}x ${c != 0 && c < 0 ? c.toFixed(3) : `+${c.toFixed(3)}`}`,
         model: x => a * x + c,
         r2: calculateR2(points, x => a * x + c),
         a: a.toFixed(3),
@@ -86,9 +88,11 @@ function quadraticRegression(points) {
 
     let [c, b, a] = solveLinearSystem(A, B);
 
+    
+
     return {
         name: "quadratic",
-        equation: `y = ${a.toFixed(3)}x² ${b < 0 ? b.toFixed(3) : `+${b.toFixed(3)}`}x ${c < 0 ? c.toFixed(3) : `+${c.toFixed(3)}`}`,
+        equation: `y = ${a.toFixed(3)}x² ${b != 0 && b < 0 ? b.toFixed(3) : `+${b.toFixed(3)}`}x ${c < 0 ? c.toFixed(3) : `+${c.toFixed(3)}`}`,
         model: x => a * x ** 2 + b * x + c,
         r2: calculateR2(points, x => a * x ** 2 + b * x + c),
         a: a.toFixed(3),
@@ -104,6 +108,8 @@ function exponentialRegression(points) {
 
     let a = Math.exp(linearModel.model(0));
     let b = linearModel.model(1) - linearModel.model(0);
+
+
 
     return {
         name: "exponent",
@@ -123,6 +129,8 @@ function logarithmicRegression(points) {
 
     let a = linearModel.model(1) - linearModel.model(0);
     let c = linearModel.model(0);
+
+    
 
     return {
         name: "logarythm",

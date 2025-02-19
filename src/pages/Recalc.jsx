@@ -5,6 +5,8 @@ import MathModel from "../components/MathModel";
 import recalcModel from "../helpers/recalcModel";
 import { setRecalcedAverages } from "../redux/slices/avgValuesSlice";
 import recalcValues from "../helpers/recalcValues";
+import AvgValuesTable from "./AvgValuesTable";
+import { Table } from "../components/Table";
 
 export default function Recalc(){
 
@@ -22,7 +24,7 @@ export default function Recalc(){
 
     const handleGetRecalcValues = () => {
 
-        
+        console.log(setRecalcedAverages(recalcValues(workTimeValues, recalcMathModel, factorMathModel)))
 
         dispatch(setRecalcedAverages(recalcValues(workTimeValues, recalcMathModel, factorMathModel)))
     }
@@ -40,8 +42,8 @@ export default function Recalc(){
             <MyButton
                 text={"Получить значения пересчёта"}
                 onClick={handleGetRecalcValues}/>
-
-            
+            <h3>Значения пересчёта:</h3>
+            {/* <Table /> */}
         </div>
     )
 }
