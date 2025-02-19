@@ -2,8 +2,9 @@ import regression from 'regression'
 import transformPoints from "./transformPoints";
 
 export const findBestModel = (xValues, yValues) => {
-
+    
     const data = transformPoints(xValues, yValues)
+    
 
     const models = {
         linear: regression.linear(data),

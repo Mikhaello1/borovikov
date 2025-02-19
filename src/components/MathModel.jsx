@@ -10,7 +10,6 @@ function MathModel({xValues, yValues, factorName, setMathModelValue}) {
     const model = useSelector(state => state.mathModels[whatModel])
 
     const handleCreateModel = () => {
-        console.log(findBestModel(xValues, yValues))
         dispatch(setMathModelValue(findBestModel(xValues, yValues)))
     };
 

@@ -21,6 +21,7 @@ const ExcelImporter = () => {
 
             const { currencyData, workTimeData, paramData } = processTableData(jsonData);
 
+
             currencyData.length && dispatch(setFactorData(currencyData));
             workTimeData.length && dispatch(setWorkTimeData(workTimeData));
 
@@ -88,7 +89,7 @@ const ExcelImporter = () => {
             }
             rowIndex++;
         }
-        
+
         rowIndex = 0; // Сброс индекса для контрольных параметров
 
         // Обработка контрольных параметров
@@ -120,9 +121,9 @@ const ExcelImporter = () => {
 
         for (let j = 1; j < jsonData[1].length; j++) {
             if (j <= points.factorPoints) {
-                currencyData.push([jsonData[1][j]]);
+                currencyData.push(jsonData[1][j]);
             } else {
-                workTimeData.push([jsonData[1][j]]);
+                workTimeData.push(jsonData[1][j]);
             }
         }
 
