@@ -7,6 +7,10 @@ import { setRecalcedAverages } from "../redux/slices/avgValuesSlice";
 import recalcValues from "../helpers/recalcValues";
 import AvgValuesTable from "./AvgValuesTable";
 import { Table } from "../components/Table";
+import { setRecalcedValues } from "../redux/slices/recalcedValuesSlice";
+import { findBestModel } from "../helpers/findBestModel";
+import { functionModels } from "../helpers/functionModels";
+import { ScatterPlot } from "../components/Graphic";
 
 export default function Recalc(){
 
@@ -16,25 +20,21 @@ export default function Recalc(){
     const workTimeMathModel = useSelector(state => state.mathModels.workTimeMathModel)
     const workTimeAverages = useSelector(state => state.avgValuesData.workTimeAverages)
     const factorAverages = useSelector(state => state.avgValuesData.factorAverages)
-    const recalcedValues = useSelector(state => state.avgValuesData.recalcedAverages)
+    const { recalcedFactorValues, recalcedYParamValues } = useSelector(state => state.recalcedValues)
     const workTimeValues = useSelector(state => state.workTimeData.values)
     const factorValues = useSelector(state => state.factorData.values)
 
     const handleGetRecalcModel = () => {
-        console.log(workTimeValues, workTimeAverages)
-        recalcModel(workTimeValues, workTimeAverages, factorValues, factorAverages)
-        // dispatch(setRecalcMathModel(recalcModel(factorMathModel, workTimeMathModel)))
+        dispatch(setRecalcMathModel(recalcModel(workTimeValues, workTimeAverages, factorValues, factorAverages)))
     }
 
     const handleGetRecalcValues = () => {
-        
-
-        // console.log(setRecalcedAverages(recalcValues(workTimeValues, recalcMathModel, factorMathModel)))
-
-        // dispatch(setRecalcedAverages(recalcValues(workTimeValues, recalcMathModel, factorMathModel)))
+        dispatch(setRecalcedValues(recalcValues(workTimeValues, recalcMathModel, factorMathModel)))
     }
 
+
     return(
+
         <div>
             <MyButton
                 text={"Получить модель пересчёта"}
@@ -48,7 +48,10 @@ export default function Recalc(){
                 text={"Получить значения пересчёта"}
                 onClick={handleGetRecalcValues}/>
             <h3>Значения пересчёта:</h3>
-            {/* <Table /> */}
+            {recalcedYParamValues.length ? <Table averages={recalcedYParamValues} factorName={'I'} factorData={recalcedFactorValues}/> : null}
+
+            <ScatterPlot xData={recalcedFactorValues} yData={recalcedYParamValues} style={{height: "300px"}}/>
+            
         </div>
     )
 }

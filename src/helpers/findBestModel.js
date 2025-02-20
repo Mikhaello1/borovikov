@@ -5,6 +5,7 @@ export const findBestModel = (xValues, yValues) => {
     
     const data = transformPoints(xValues, yValues)
     
+    
 
     const models = {
         linear: regression.linear(data),
@@ -14,7 +15,10 @@ export const findBestModel = (xValues, yValues) => {
         power: regression.power(data)
     };
 
+    
+
     const bestModel = Object.entries(models).reduce((best, current) => {
+        
         return current[1].r2 > best[1].r2 ? current : best;
     });
 

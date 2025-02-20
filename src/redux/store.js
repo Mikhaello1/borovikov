@@ -4,6 +4,7 @@ import workTimeValuesReducer from './slices/importedDataSlices/workTimeValuesSli
 import paramValuesReducer from './slices/importedDataSlices/paramValuesSlice.js'
 import avgValuesReducer from './slices/avgValuesSlice.js'
 import mathModelsReducer from './slices/mathModelsSlice.js'
+import recalcedValuesReducer from './slices/recalcedValuesSlice.js'
 
 
 export const store = configureStore({
@@ -12,7 +13,8 @@ export const store = configureStore({
     workTimeData: workTimeValuesReducer,
     paramData: paramValuesReducer,
     avgValuesData: avgValuesReducer,
-    mathModels: mathModelsReducer
+    mathModels: mathModelsReducer,
+    recalcedValues: recalcedValuesReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

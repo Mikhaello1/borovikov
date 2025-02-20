@@ -5,7 +5,6 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     factorAverages: [],
     workTimeAverages: [],
-    recalcedAverages: []
 }
 
 const avgValuesSlice = createSlice({
