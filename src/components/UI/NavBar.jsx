@@ -8,7 +8,7 @@ export default function NavBar(){
             <NavLink to='/'>Ввод данных</NavLink>
             <NavLink to='/avgValues'>Средние значения</NavLink>
             <NavLink to='/recalc'>Значения пересчёта</NavLink>
-            <NavLink></NavLink>
+            <NavLink to='/forecast'>Прогнозирование ошибок</NavLink>
         </nav>
     )
 }

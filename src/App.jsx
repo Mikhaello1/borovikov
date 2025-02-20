@@ -1,37 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import AvgValuesTable from "./pages/AvgValuesTable";
-import findBestFitModel from "./helpers/fitModel";
-import MySelect from "./components/UI/MySelect";
-import TAF from "./components/TAF";
-import MathModel from "./components/MathModel";
+
 import recalcModel from "./helpers/recalcModel";
-import recalcValues from "./helpers/recalcValues";
-import ExcelImport from "./components/ExcelImport";
+
 import ImportedDataTable from "./pages/ImportedDataTable";
 
 function App() {
 
-    const [xValuesMIP, setXValuesMIP] = useState([]);
-    const [yValuesMIP, setYValuesMIP] = useState([]);
 
-    const [mainModel, setMainModel] = useState({})
-    const [tModel, setTModel] = useState({})
-
-    const [recalcFunc, setRecalcFunc] = useState({formula: 'aaa'});
-
-    const [recalcedValues, setRecalcedValues] = useState({})
-
-    const handleRecalcClick = () => {
-        setRecalcFunc(recalcModel(mainModel, tModel))
-        
-    }
-
-    // const handleGetRecalcValues = () => {
-    //     console.log(recalcFunc)
-    //     console.log(recalcValues(xValuesMIP, recalcFunc, mainModel))
-    //     setRecalcedValues(recalcValues(xValuesMIP, recalcFunc, mainModel))
-    // }
 
     return (
         <div>
