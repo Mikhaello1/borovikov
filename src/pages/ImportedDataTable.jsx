@@ -40,7 +40,7 @@ export default function ImportedDataTable() {
 
     const handleInputChange = (e, setValue, index, indexInArr) => {
         let newValue = e.currentTarget.value || 0;
-        console.log(newValue)
+    
         if(indexInArr !== undefined) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
         else dispatch(setValue({value: newValue, index}))
     };
@@ -102,7 +102,7 @@ export default function ImportedDataTable() {
     const handleGetAvgValues = () => {
 
         let averages = calcAverages(paramData)
-        console.log(averages)
+    
         averages.forEach(row => {
             return row.map(el => {
                 return [roundNum(el)]
@@ -121,12 +121,16 @@ export default function ImportedDataTable() {
         const isChecked = event.target.checked;
         
         let newArr = [];
-
+        console.log(isChecked)
         if (isChecked) {
             newArr = new Array(3).fill(null).map(() => [new Array(currencyData.length).fill(0), new Array(workTimeData.length).fill(0)]);
+            dispatch(setParamData({ control: newArr }));
+        }
+        else{
+            dispatch(setParamData({control: []}))
         }
 
-        dispatch(setParamData({ control: newArr }));
+        
     };
 
     return (

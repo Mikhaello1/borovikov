@@ -3,9 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 
 const initialState = {
-    educ: [
-        
-    ],
+    educ: [],
     control: []
 }
 
@@ -16,8 +14,8 @@ const paramValuesSlice = createSlice({
         setParamData: (state, action) => {
             const {educ, control} = action.payload
             
-            if (educ.length) state.educ = educ;
-            if (control.length) state.control = control;
+            if (educ?.length) state.educ = educ;
+            if (control?.length || control?.length == 0) state.control = control;  //придумать как переделать
         },
         setEducParamPoints: (state, action) => {
             const { newLength, numOfFactorPoints, numOfWorkTimePoints } = action.payload

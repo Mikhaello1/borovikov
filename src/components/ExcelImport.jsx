@@ -69,7 +69,7 @@ const ExcelImporter = () => {
 
     function defineEndOfYValues(arr) {
         for (let i = 3; i < arr.length; i++) {
-            if (arr[i].length === 1) {
+            if (arr[i].length <= 1) {
                 return i;
             }
         }

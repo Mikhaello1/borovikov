@@ -3,13 +3,14 @@ import { Table } from "../components/Table";
 import { findBestModel } from "../helpers/findBestModel";
 import { functionModels } from "../helpers/functionModels";
 import recalcModel from "../helpers/recalcModel";
+import roundNum from "../helpers/roundNum";
+import calcForecastError from "../helpers/calcForecastError";
 
 export default function Forecast() {
-    const t = 13000;
+    const t = 150;
 
     const workTimeValues = useSelector((state) => state.workTimeData.values);
     const controlParamData = useSelector((state) => state.paramData.control);
-    const recalcMathModel = useSelector((state) => state.mathModels.recalcMathModel);
     const factorValues = useSelector((state) => state.factorData.values);
 
     let controlWorkTimeParamData = controlParamData.map((row) => row[1]);
@@ -18,17 +19,30 @@ export default function Forecast() {
     let trulyYValues = controlWorkTimeParamData.map((row) => {
         const rowModel = findBestModel(workTimeValues, row);
         return functionModels[rowModel.type](...rowModel.equation, t);
-    });
+    }).map(el => roundNum(el));
 
     let forecastValues = controlFactorParamData.map((row, index) => {
-        console.log(row)
-        
-        const rowModel = recalcModel(workTimeValues, controlWorkTimeParamData[index], factorValues, row);
-        return functionModels[rowModel.type](...rowModel.equation, t);
-    });
+        const rowRecalcModel = recalcModel(workTimeValues, controlWorkTimeParamData[index], factorValues, row);
+        const immitationFactor = functionModels[rowRecalcModel.type](...rowRecalcModel.equation, t);
+        console.log(immitationFactor)
+        const rowModel = findBestModel(factorValues, row);
 
-    console.log(trulyYValues)
-    console.log(forecastValues);
+        console.log(rowModel)
 
-    return <div>{/* <Table /> */}</div>;
+        return functionModels[rowModel.type](...rowModel.equation, immitationFactor);
+    }).map(el => roundNum(el));
+
+    console.log(forecastValues, trulyYValues)
+
+    console.log(calcForecastError(forecastValues, trulyYValues))
+
+    return (
+        <div>
+            <Table 
+                averages={trulyYValues} 
+                factorName={"Прогнозное значение параметра"} 
+                factorData={forecastValues} 
+                numColumnAmount={forecastValues.length} />
+        </div>
+    );
 }
