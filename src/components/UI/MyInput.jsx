@@ -1,9 +1,10 @@
 import { memo } from "react"
 import styles from "../../styles/MyInput.module.css"
 
-function MyInput({className, type, placeholder, pattern, min, max, onChange, value}) {
+function MyInput({className, type, placeholder, pattern, min, max, onChange, value, style}) {
   return (
     <input 
+        style={style}
         className={`${className} ${styles.MyInput}`}
         type={type}
         placeholder={placeholder}

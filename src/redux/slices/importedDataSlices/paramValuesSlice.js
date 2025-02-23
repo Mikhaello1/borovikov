@@ -15,7 +15,7 @@ const paramValuesSlice = createSlice({
             const {educ, control} = action.payload
             
             if (educ?.length) state.educ = educ;
-            if (control?.length || control?.length == 0) state.control = control;  //придумать как переделать
+            if (control?.length || control?.length == 0) state.control = control;  //придумать как переделать   
         },
         setEducParamPoints: (state, action) => {
             const { newLength, numOfFactorPoints, numOfWorkTimePoints } = action.payload
