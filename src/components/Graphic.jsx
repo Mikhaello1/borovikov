@@ -1,13 +1,13 @@
-// ScatterPlot.js
+
 import React, { memo } from 'react';
-import { Line, Scatter } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, Tooltip, Legend, LineElement } from 'chart.js';
 
-// Регистрация необходимых компонентов
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, Tooltip, Legend, LineElement);
 
 export const ScatterPlot = ({ xData, yData, style }) => {
-    // Подготовка данных для графика
+    
     const data = {
         labels: xData,
         datasets: [
@@ -41,8 +41,11 @@ export const ScatterPlot = ({ xData, yData, style }) => {
 
     return (
         <div style={style}>
-            <Line data={data} options={options} />
+            <Line data={data} options={options}/>
         </div>
+        
     );
 };
+
+
 

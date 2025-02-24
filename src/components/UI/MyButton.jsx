@@ -1,6 +1,7 @@
+import { memo } from "react"
 import styles from "../../styles/MyButton.module.css"
 
-export default function MyButton({text, onClick, disabled, style}){
+function MyButton({text, onClick, disabled, style}){
 
     return (
         <button
@@ -12,3 +13,5 @@ export default function MyButton({text, onClick, disabled, style}){
         </button>
     )
 }
+
+export default memo(MyButton)

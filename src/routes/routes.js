@@ -1,4 +1,3 @@
-import App from "../App";
 import avgValuesTable from "../pages/AvgValuesTable";
 import Forecast from "../pages/Forecast";
 import ImportedDataTable from "../pages/ImportedDataTable";

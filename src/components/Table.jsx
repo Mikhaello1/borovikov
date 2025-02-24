@@ -1,17 +1,16 @@
 import { memo } from "react";
-import MathModel from "./MathModel";
-import styles from "../styles/ImportedDataTable.module.css"
+import styles from "../styles/Table.module.css"
 
-export const Table = memo(({ averages, factorName, factorData, setMathModelValue, numColumnAmount }) => {
-//               зн-я второй колонки, подпись колонки, зн-я первой колонки, убрать хуйню, количество строчек
+export const Table = memo(({ averages, columnNames, factorData, numColumnAmount }) => {
+//               зн-я второй колонки, подпись колонок, зн-я первой колонки, количество строчек
     return (
         <>
             <table className={styles.table}>
                 <thead>
                     <tr>
                         {numColumnAmount && <th>Номер экземпляра контрольной выборки</th>}
-                        <th className={styles.th}>{factorName} </th>
-                        <th className={styles.th}>Y-параметр</th>
+                        <th className={styles.th}>{columnNames[0]} </th>
+                        <th className={styles.th}>{columnNames[1]}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -20,7 +19,7 @@ export const Table = memo(({ averages, factorName, factorData, setMathModelValue
                     })}
                 </tbody>
             </table>
-            <MathModel xValues={factorData} yValues={averages} factorName={factorName} setMathModelValue={setMathModelValue}/>
+            
         </>
     );
 });

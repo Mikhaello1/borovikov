@@ -1,0 +1,15 @@
+.table{
+    border-collapse: collapse;
+}
+
+.th{
+    border: 1px solid #000000;
+    background-color: rgb(226, 226, 226);
+}
+
+.td, .th{
+    min-width: 100px;
+    text-align: center;
+    font-size: 20px;
+    
+}

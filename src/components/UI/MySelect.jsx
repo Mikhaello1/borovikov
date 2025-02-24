@@ -1,4 +1,6 @@
-export default function MySelect({title, onChange, defaultValue, options}) {
+import { memo } from "react";
+
+function MySelect({title, onChange, defaultValue, options}) {
     return (
         <div>
             <h3>{title}</h3>
@@ -14,3 +16,5 @@ export default function MySelect({title, onChange, defaultValue, options}) {
         </div>
     );
 }
+
+export default memo(MySelect)

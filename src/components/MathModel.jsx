@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { findBestModel } from "../helpers/findBestModel";
 
@@ -9,16 +9,18 @@ function MathModel({xValues, yValues, factorName, setMathModelValue}) {
 
     const model = useSelector(state => state.mathModels[whatModel])
 
-    const handleCreateModel = () => {
+    const handleCreateModel = useCallback(() => {
         dispatch(setMathModelValue(findBestModel(xValues, yValues)))
-    };
+    }, [xValues, yValues]);
 
     
 
     return (
         <div>
-            <button onClick={handleCreateModel}>Получить математичускую модель</button>
-            {model.formula && model.formula}
+            <button onClick={handleCreateModel}>Получить математическую модель</button>
+            <div>
+                {model.formula && model.formula}
+            </div>
         </div>
     );
 }

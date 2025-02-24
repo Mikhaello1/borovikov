@@ -7,7 +7,6 @@ import NavBar from './components/UI/NavBar.jsx'
 
 createRoot(document.getElementById('root')).render(
     <Provider store={store}>
-        
         <AppRouter/>
     </Provider>
 )

@@ -1,12 +1,11 @@
-import { memo, useCallback, useState } from "react";
-import MyInput from "../components/UI/MyInput";
+import { memo } from "react";
 import styles from "../styles/AvgValuesTable.module.css";
-import { useDispatch, useSelector } from "react-redux";
-import { calcAverages } from "../helpers/calcAverages";
-import { setFactorAverages, setWorkTimeAverages } from "../redux/slices/avgValuesSlice";
+import { useSelector } from "react-redux";
 import { setFactorMathModel, setWorkTimeMathModel } from "../redux/slices/mathModelsSlice";
 import MathModel from "../components/MathModel";
 import { Table } from "../components/Table";
+import { ScatterPlot } from "../components/Graphic";
+import roundNum from "../helpers/roundNum";
 
 
 
@@ -21,23 +20,37 @@ function AvgValuesTable() {
         <div className={styles.avgValuesMain}>
             
             {avgFactorValues.length ? (
-                <Table 
-                    averages={avgFactorValues} 
-                    factorName={'ток коллектора'}
-                    factorData={currencyData} 
-                    setMathModelValue={setFactorMathModel}/>
-                
+                <div style={{display: 'flex'}}>
+                    <div>
+                        <Table 
+                            averages={avgFactorValues.map(el => roundNum(el))} 
+                            columnNames={['Iк', 'U']}
+                            factorData={currencyData} 
+                            setMathModelValue={setFactorMathModel}/>
+                        <MathModel xValues={currencyData} yValues={avgFactorValues} factorName={'ток коллектора'} setMathModelValue={setFactorMathModel}/>
+                    </div>
+                    
+                    <ScatterPlot xData={currencyData} yData={avgFactorValues} style={{height: '500px', width: '500px'}}/>
+                    
+                </div>
                 
             ): null}
             
-            {avgWorkTimeValues.length ?
-                <Table 
-                    averages={avgWorkTimeValues} 
-                    factorName={'наработка'}
-                    factorData={workTimeData} 
-                    setMathModelValue={setWorkTimeMathModel}
-                /> : null
-            }
+            {avgWorkTimeValues.length ? (
+                <div style={{display: "flex"}}>
+                    <div>
+                        <Table 
+                            averages={avgWorkTimeValues.map(el => roundNum(el))} 
+                            columnNames={['t', 'U']}
+                            factorData={workTimeData} 
+                            setMathModelValue={setWorkTimeMathModel}
+                        />
+                        <MathModel xValues={workTimeData} yValues={avgWorkTimeValues} factorName={'наработка'} setMathModelValue={setWorkTimeMathModel}/>
+                    </div>
+                    <ScatterPlot xData={workTimeData} yData={avgWorkTimeValues} style={{height: '500px', width: '500px'}}/>
+                </div>
+
+            ) : null}
         </div>
         
         
