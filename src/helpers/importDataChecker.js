@@ -1,32 +1,35 @@
+const pointsCheck = (pointsData) => {
 
-// const pointsCheck = (pointsData) => {
-//     let pointsDataCheck = true;
-//     let tempSet = new Set()
-    
-//     for (let el of pointsData){
-//         if (el <= 0) {
-//             pointsDataCheck = false;
-//             break;
-//         }
-//         tempSet.add(el)
-//     }
+    console.log(pointsData)
+    const tempSet = new Set();
 
-//     if(tempSet.length !== pointsData.length) pointsDataCheck = false;
+    for (let el of pointsData) {
+        if (el <= 0) {
+            return false;
+        }
+        tempSet.add(Number(el));
+    }
 
-//     return pointsDataCheck;
-// }
+    return tempSet.size === pointsData.length;
+}
 
-// export const importDataChecker = (paramData, factorData, workTimeData) => {
-//     let paramDataCheck = true;
-//     let factorDataCheck = true;
-//     let workTimeDataCheck = true;
+const paramDataCheck = (paramData) => {
+    let paramDataFlag = true;
 
-    
+    for (let row of paramData){
+        for (let el of row){
+            if(el <= 0) paramDataFlag = false;
+        }
+    }
 
+    return paramDataFlag
+}
 
+export const importDataChecker = (educData, controlData, factorData, workTimeData) => {
 
-    
+    if(pointsCheck(factorData) && pointsCheck(workTimeData) && paramDataCheck(educData) && paramDataCheck(controlData)){
+        return true
+    }
+    else return false
 
-    
-
-// }
+}

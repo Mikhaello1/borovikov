@@ -1,4 +1,4 @@
-import React from "react";
+import { useMemo } from "react";
 import styles from "../styles/ImportedDataTable.module.css";
 import MyInput from "../components/UI/MyInput";
 import { useSelector, useDispatch } from "react-redux";
@@ -17,6 +17,7 @@ import { useNavigate } from "react-router";
 import MyButton from "../components/UI/MyButton";
 import roundNum from "../helpers/roundNum";
 import { setAvgRouteAvailable } from "../redux/slices/routesSlice";
+import { importDataChecker } from "../helpers/importDataChecker";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -28,6 +29,12 @@ export default function ImportedDataTable() {
     const paramData = useSelector((state) => state.paramData);
 
     let navigate = useNavigate();
+
+    const isDataValid = useMemo(() => {
+        return importDataChecker(educParamData, controlParamData, currencyData, workTimeData);
+    }, [educParamData, controlParamData, currencyData, workTimeData]);
+
+    console.log(isDataValid)
 
     const handleHandInput = () => {
         let newArr = [];
@@ -272,7 +279,7 @@ export default function ImportedDataTable() {
                             ) : null}
                         </tbody>
                     </table>
-                    <MyButton onClick={handleGetAvgValues} text={"Получить таблицу средних значений"} disabled={!educParamData.length} />
+                    <MyButton onClick={handleGetAvgValues} text={"Получить таблицу средних значений"} disabled={!isDataValid} />
                 </div>
             ) : null}
         </>

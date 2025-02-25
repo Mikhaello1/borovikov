@@ -1,14 +1,15 @@
 .MyButton{
     font-size: 20px;
     padding: 10px;
-    background-color: #3fff39;
+    background-color: #21ff19;
     color: white;
     border-radius: 20px;
     border: none;
 }
 
 .MyButton:disabled{
-    background-color: #87ff83;
+    background-color: #a0ff9d;
+    cursor: default;
 }
 
 .MyButton:hover{

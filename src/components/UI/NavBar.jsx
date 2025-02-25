@@ -16,7 +16,7 @@ export default function NavBar() {
         }
     }, [hasRedirected, navigate]);
 
-    const routes = [
+    const navigationLinks = [
         { path: "/", label: "Ввод данных", isAvailable: true },
         { path: "/avgValues", label: "Средние значения", isAvailable: avgRoute },
         { path: "/recalc", label: "Значения пересчёта", isAvailable: recalcRoute },
@@ -30,7 +30,7 @@ export default function NavBar() {
 
     return (
         <nav className={styles.NavBar}>
-            {routes.map(({ path, label, isAvailable }) => (
+            {navigationLinks.map(({ path, label, isAvailable }) => (
                 isAvailable ? (
                     <NavLink key={path} className={getRouteStyle(path)} to={path}>
                         {label}
