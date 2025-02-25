@@ -1,7 +1,7 @@
 import { memo } from "react";
 import styles from "../styles/Table.module.css"
 
-export const Table = memo(({ averages, columnNames, factorData, numColumnAmount }) => {
+export const Table = memo(({ averages, columnNames, factorData, numColumnAmount, condition }) => {
 //               зн-я второй колонки, подпись колонок, зн-я первой колонки, количество строчек
     return (
         <>
@@ -15,7 +15,7 @@ export const Table = memo(({ averages, columnNames, factorData, numColumnAmount 
                 </thead>
                 <tbody>
                     {averages.map((value, index) => {
-                        return <TableRow key={index} FValue={factorData[index]} YValue={value} numOfInstance={numColumnAmount ? index+1 : undefined}/>;
+                        return <TableRow key={index} FValue={factorData[index]} YValue={value} numOfInstance={numColumnAmount ? index+1 : undefined} condition={condition}/>;
                     })}
                 </tbody>
             </table>
@@ -24,13 +24,14 @@ export const Table = memo(({ averages, columnNames, factorData, numColumnAmount 
     );
 });
 
-const TableRow = memo(({ FValue, YValue, numOfInstance }) => {
+const TableRow = memo(({ FValue, YValue, numOfInstance, condition }) => {
     
     return (
         <tr>
             {numOfInstance ? <td className={styles.td}>{numOfInstance}</td> : null}
             <td className={styles.td}>{FValue}</td>
-            <td className={styles.td}>{YValue}</td>
+            
+            <td className={styles.td} style={condition ? condition(YValue) ? {color: '#01aa12'} : {color: 'red'} : null}>{YValue}</td>
         </tr>
     );
 });

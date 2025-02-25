@@ -20,7 +20,7 @@ function MathModel({xValues, yValues, factorName, setMathModelValue, setGoNext})
 
     return (
         <div>
-            <button onClick={handleCreateModel}>Получить математическую модель</button>
+            <button style={{fontSize: '15px'}}onClick={handleCreateModel}>Получить математическую модель</button>
             <div>
                 {model.formula && model.formula}
             </div>

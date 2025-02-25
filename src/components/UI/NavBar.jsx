@@ -2,6 +2,7 @@ import { NavLink, useLocation, useNavigate } from "react-router";
 import styles from "../../styles/NavBar.module.css";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { PiArrowCircleRightBold } from "react-icons/pi";
 
 export default function NavBar() {
     const { avgRoute, recalcRoute, forecastRoute } = useSelector((state) => state.routes);
@@ -17,29 +18,32 @@ export default function NavBar() {
     }, [hasRedirected, navigate]);
 
     const navigationLinks = [
-        { path: "/", label: "Ввод данных", isAvailable: true },
-        { path: "/avgValues", label: "Средние значения", isAvailable: avgRoute },
-        { path: "/recalc", label: "Значения пересчёта", isAvailable: recalcRoute },
-        { path: "/forecast", label: "Прогнозирование ошибок", isAvailable: forecastRoute },
+        { path: "/", label: "Ввод данных", isAvailable: true, hasNext: true },
+        { path: "/avgValues", label: "Средние значения", isAvailable: avgRoute, hasNext: true },
+        { path: "/recalc", label: "Значения пересчёта", isAvailable: recalcRoute, hasNext: true },
+        { path: "/forecast", label: "Прогнозирование ошибок", isAvailable: forecastRoute, hasNext: false },
     ];
 
     const getRouteStyle = (path) => {
         if (location.pathname === path) return styles.currentRoute;
-        return routes.find(route => route.path === path && route.isAvailable) ? styles.availableRoute : styles.unavailableRoute;
+        return navigationLinks.find(route => route.path === path && route.isAvailable) ? styles.availableRoute : styles.unavailableRoute;
     };
 
     return (
-        <nav className={styles.NavBar}>
-            {navigationLinks.map(({ path, label, isAvailable }) => (
-                isAvailable ? (
-                    <NavLink key={path} className={getRouteStyle(path)} to={path}>
-                        {label}
-                    </NavLink>
-                ) : (
-                    <span key={path} className={styles.unavailableRoute}>
-                        {label}
-                    </span>
-                )
+        <nav className={styles.NavBar} style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {navigationLinks.map(({ path, label, isAvailable, hasNext }) => (
+                <div key={path} style={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center', position:'relative' }}>
+                    {isAvailable ? (
+                        <NavLink className={getRouteStyle(path)} to={path}>
+                            {label}
+                        </NavLink>
+                    ) : (
+                        <span className={styles.unavailableRoute}>
+                            {label}
+                        </span>
+                    )}
+                    {hasNext && <PiArrowCircleRightBold size={40} color="white" style={{ position: 'absolute', right: -20 }} />}
+                </div>
             ))}
         </nav>
     );

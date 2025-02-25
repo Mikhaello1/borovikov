@@ -7,10 +7,11 @@ import { Table } from "../components/Table";
 import { setRecalcedValues } from "../redux/slices/recalcedValuesSlice";
 import { ScatterPlot } from "../components/Graphic";
 import { setForecastRouteAvailable } from "../redux/slices/routesSlice";
-
+import { useNavigate } from "react-router";
 
 export default function Recalc() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const recalcMathModel = useSelector((state) => state.mathModels.recalcMathModel);
     const factorMathModel = useSelector((state) => state.mathModels.factorMathModel);
     const workTimeAverages = useSelector((state) => state.avgValuesData.workTimeAverages);
@@ -25,20 +26,38 @@ export default function Recalc() {
 
     const handleGetRecalcValues = () => {
         dispatch(setRecalcedValues(recalcValues(workTimeValues, recalcMathModel, factorMathModel)));
-        dispatch(setForecastRouteAvailable(true))
+        dispatch(setForecastRouteAvailable(true));
     };
 
     return (
-        <div>
-            <MyButton text={"Получить модель пересчёта"} onClick={handleGetRecalcModel} />
+        <div style={{position: 'relative'}}> 
+            <div style={{display: 'flex', alignItems: "center", marginBottom: '10px'}}>
+                <MyButton text={"Получить модель пересчёта"} onClick={handleGetRecalcModel} />
 
-            <div>{recalcMathModel.formula}</div>
+                <div style={{fontSize: '20px', marginLeft: '10px'}}>{recalcMathModel.formula}</div>
+            </div>
 
             <MyButton text={"Получить значения пересчёта"} onClick={handleGetRecalcValues} />
-            <h3>Значения пересчёта:</h3>
-            {recalcedYParamValues.length ? <Table averages={recalcedYParamValues} columnNames={["Iим", "U"]} factorData={recalcedFactorValues} /> : null}
 
-            <ScatterPlot xData={recalcedFactorValues} yData={recalcedYParamValues} style={{ height: "300px" }} />
+            {recalcedYParamValues.length ? (
+                <>
+                    <h3>Значения пересчёта:</h3>
+                    <div style={{display: 'flex'}}>
+                        <Table averages={recalcedYParamValues} columnNames={["Iим", "U"]} factorData={recalcedFactorValues} />
+                        <ScatterPlot xData={recalcedFactorValues} yData={recalcedYParamValues} style={{ height: "250px", width: "500px" }} axisNames={["Iим", "U"]} />
+                    </div>
+                </>
+            ) : null}
+
+            <div
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                }}
+            >
+                <MyButton text={'Нахождение ошибки прогнозирования'} onClick={() => navigate('/forecast')} disabled={!recalcedYParamValues.length}/>
+            </div>
         </div>
     );
 }

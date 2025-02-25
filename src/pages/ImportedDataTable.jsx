@@ -34,7 +34,7 @@ export default function ImportedDataTable() {
         return importDataChecker(educParamData, controlParamData, currencyData, workTimeData);
     }, [educParamData, controlParamData, currencyData, workTimeData]);
 
-    console.log(isDataValid)
+    console.log(isDataValid);
 
     const handleHandInput = () => {
         let newArr = [];
@@ -140,11 +140,7 @@ export default function ImportedDataTable() {
     };
 
     return (
-        <>
-            <ExcelImporter />
-            <button onClick={handleHandInput} disabled={educParamData.length}>
-                Ручной ввод
-            </button>
+        <div style={{ position: "relative" }} className={styles.importPage}>
             {educParamData?.length ? (
                 <div className={styles.ImportedDataTable}>
                     <input type="checkbox" checked={controlParamData.length > 0} onChange={(e) => handleControlSample(e)} />
@@ -279,9 +275,31 @@ export default function ImportedDataTable() {
                             ) : null}
                         </tbody>
                     </table>
-                    <MyButton onClick={handleGetAvgValues} text={"Получить таблицу средних значений"} disabled={!isDataValid} />
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                        }}
+                    >
+                        <MyButton onClick={handleGetAvgValues} text={"Получить таблицу средних значений"} disabled={!isDataValid} />
+                    </div>
                 </div>
-            ) : null}
-        </>
+            ) : (
+                <div className={styles.inputData}>
+                    <div>Введите данные:</div>
+
+                    <div>
+                        <ExcelImporter />
+                    </div>
+                    <div>ИЛИ</div>
+                    <div>
+                        <button onClick={handleHandInput} disabled={educParamData.length}>
+                            Ручной ввод
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }

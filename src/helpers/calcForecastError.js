@@ -4,7 +4,6 @@ export default function calcForecastError(forecastValues, trulyValues) {
 
     for (let i = 0; i<trulyValues.length; i++){
         tempSum += ((forecastValues[i] - trulyValues[i]) / trulyValues[i]) ** 2;
-        console.log(tempSum)
     }
 
     return Math.sqrt(

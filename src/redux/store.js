@@ -6,6 +6,7 @@ import avgValuesReducer from './slices/avgValuesSlice.js'
 import mathModelsReducer from './slices/mathModelsSlice.js'
 import recalcedValuesReducer from './slices/recalcedValuesSlice.js'
 import routesSliceReducer from './slices/routesSlice.js'
+import forecastErrorsReducer from './slices/forecastErrorsSlice.js'
 
 
 export const store = configureStore({
@@ -17,6 +18,7 @@ export const store = configureStore({
     mathModels: mathModelsReducer,
     recalcedValues: recalcedValuesReducer,
     routes: routesSliceReducer,
+    forecastErrors: forecastErrorsReducer,
   },
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware({

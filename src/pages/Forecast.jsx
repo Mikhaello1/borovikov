@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Table } from "../components/Table";
 import { findBestModel } from "../helpers/findBestModel";
 import { functionModels } from "../helpers/functionModels";
@@ -9,14 +9,17 @@ import MyInput from "../components/UI/MyInput";
 import { useCallback, useMemo, useState } from "react";
 import MyButton from "../components/UI/MyButton";
 import { MdCancel } from "react-icons/md";
+import { setErrors } from "../redux/slices/forecastErrorsSlice";
 
 export default function Forecast() {
     const [tValues, setTValues] = useState([1, 2, 34]);
-    const [errorValues, setErrorValues] = useState([]);
+    
+    const dispatch = useDispatch()
 
     const workTimeValues = useSelector((state) => state.workTimeData.values);
     const controlParamData = useSelector((state) => state.paramData.control);
     const factorValues = useSelector((state) => state.factorData.values);
+    const forecastErrors = useSelector(state => state.forecastErrors.errors);
 
     let controlWorkTimeParamData = controlParamData.map((row) => row[1]);
     let controlFactorParamData = controlParamData.map((row) => row[0]);
@@ -38,10 +41,7 @@ export default function Forecast() {
                 .map((row, index) => {
                     const rowRecalcModel = recalcModel(workTimeValues, controlWorkTimeParamData[index], factorValues, row);
                     const immitationFactor = functionModels[rowRecalcModel.type](...rowRecalcModel.equation, t);
-                    console.log(immitationFactor);
                     const rowModel = findBestModel(factorValues, row);
-
-                    console.log(rowModel);
 
                     return functionModels[rowModel.type](...rowModel.equation, immitationFactor);
                 })
@@ -72,11 +72,23 @@ export default function Forecast() {
         let errors = forecastValues.map((el, index) => {
             return roundNum(calcForecastError(el, trulyYValues[index]));
         });
-
-        setErrorValues(errors);
+        dispatch(setErrors(errors))
+        
     }, [forecastValues, trulyYValues]);
 
-    console.log(tValues, errorValues);
+    let satisfyCondition = useMemo(() => {
+        if(forecastErrors){
+            for (let el of forecastErrors){
+                if (el <= 10){
+                    return false;
+                }
+            }
+        }
+        return true
+    }, [forecastErrors])
+
+
+    
 
     return (
         <div>
@@ -93,7 +105,13 @@ export default function Forecast() {
             })}
             <MyButton text={"Добавить проверку"} onClick={handleAddCheck} />
             <MyButton text={"Подсчет ошибки прогнозирования"} onClick={handleCalcError} />
-            {errorValues?.length ? <Table averages={errorValues.map((value) => value * 100 + "%")} columnNames={["t", "ошибка"]} factorData={tValues} /> : null}
+            {forecastErrors?.length ? 
+                <div>
+                    <Table averages={forecastErrors.map((value) => value * 100 + "%")} columnNames={["t", "ошибка"]} factorData={tValues} condition={(x) => Number(x.slice(0, x.length-1)) <= 10}/> 
+                    {!satisfyCondition ? <MyButton text={"Ввести другие данные"} onClick={() => location.reload(true)}/> : null}
+                </div>
+            : null}
+            
         </div>
     );
 }
