@@ -11,11 +11,12 @@ import { setFactorPoints } from "../redux/slices/importedDataSlices/factorValues
 import { setWorkTimePoints } from "../redux/slices/importedDataSlices/workTimeValuesSlice";
 import { setParamData } from "../redux/slices/importedDataSlices/paramValuesSlice";
 import { calcAverages } from "../helpers/calcAverages";
-import { setFactorAverages, setWorkTimeAverages } from "../redux/slices/avgValuesSlice"
+import { setFactorAverages, setWorkTimeAverages } from "../redux/slices/avgValuesSlice";
 import ExcelImporter from "../components/ExcelImport";
 import { useNavigate } from "react-router";
 import MyButton from "../components/UI/MyButton";
 import roundNum from "../helpers/roundNum";
+import { setAvgRouteAvailable } from "../redux/slices/routesSlice";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -24,25 +25,24 @@ export default function ImportedDataTable() {
     const workTimeData = useSelector((state) => state.workTimeData.values);
     const educParamData = useSelector((state) => state.paramData.educ);
     const controlParamData = useSelector((state) => state.paramData.control);
-    const paramData = useSelector((state) => state.paramData)
+    const paramData = useSelector((state) => state.paramData);
 
-
-    let navigate = useNavigate()
+    let navigate = useNavigate();
 
     const handleHandInput = () => {
         let newArr = [];
         newArr = new Array(3).fill(null).map(() => [new Array(3).fill(0), new Array(3).fill(0)]);
         dispatch(setParamData({ educ: newArr, control: newArr }));
-        
-        dispatch(setFactorPoints(3))
-        dispatch(setWorkTimePoints(3))
+
+        dispatch(setFactorPoints(3));
+        dispatch(setWorkTimePoints(3));
     };
 
     const handleInputChange = (e, setValue, index, indexInArr) => {
         let newValue = e.currentTarget.value || 0;
-    
-        if(indexInArr !== undefined) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
-        else dispatch(setValue({value: newValue, index}))
+
+        if (indexInArr !== undefined) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
+        else dispatch(setValue({ value: newValue, index }));
     };
 
     const handleChangeNumOfInstances = (value, setValue) => {
@@ -100,52 +100,52 @@ export default function ImportedDataTable() {
     };
 
     const handleGetAvgValues = () => {
+        // if(importDataChecker(paramData, currencyData, workTimeData))
 
-        let averages = calcAverages(paramData)
-    
-        averages.forEach(row => {
-            return row.map(el => {
-                return [roundNum(el)]
-            })
-        })
-        
+        let averages = calcAverages(paramData);
+        console.log(averages);
+        averages.forEach((row) => {
+            return row.map((el) => {
+                return roundNum(el);
+            });
+        });
+        console.log(1111);
+        console.log(averages);
 
-        dispatch(setFactorAverages(averages[0]))
-        dispatch(setWorkTimeAverages(averages[1]))
+        dispatch(setFactorAverages(averages[0]));
+        dispatch(setWorkTimeAverages(averages[1]));
+        dispatch(setAvgRouteAvailable(true));
 
-        navigate('/avgValues')
-        
-    }
+        navigate("/avgValues");
+    };
 
     const handleControlSample = (event) => {
         const isChecked = event.target.checked;
-        
+
         let newArr = [];
-        console.log(isChecked)
+        console.log(isChecked);
         if (isChecked) {
             newArr = new Array(3).fill(null).map(() => [new Array(currencyData.length).fill(0), new Array(workTimeData.length).fill(0)]);
             dispatch(setParamData({ control: newArr }));
+        } else {
+            dispatch(setParamData({ control: [] }));
         }
-        else{
-            dispatch(setParamData({control: []}))
-        }
-
-        
     };
 
     return (
         <>
-            <ExcelImporter/>
+            <ExcelImporter />
             <button onClick={handleHandInput} disabled={educParamData.length}>
                 Ручной ввод
             </button>
             {educParamData?.length ? (
                 <div className={styles.ImportedDataTable}>
                     <input type="checkbox" checked={controlParamData.length > 0} onChange={(e) => handleControlSample(e)} />
-                    наличие контрольной выборки<br/>
+                    наличие контрольной выборки
+                    <br />
                     <div className={styles.inputSection}>
                         <div>
-                            <span style={{marginRight: '5px'}}>Экземпляров обучающей выборки</span>
+                            <span style={{ marginRight: "5px" }}>Экземпляров обучающей выборки</span>
                             <MyInput
                                 type="number"
                                 className={styles.pointsInput}
@@ -155,7 +155,7 @@ export default function ImportedDataTable() {
                             />
                         </div>
                         <div>
-                            <span style={{marginRight: '5px'}}>Экземпляров контрольной выборки</span>
+                            <span style={{ marginRight: "5px" }}>Экземпляров контрольной выборки</span>
                             <MyInput
                                 type="number"
                                 className={styles.pointsInput}
@@ -165,7 +165,7 @@ export default function ImportedDataTable() {
                             />
                         </div>
                         <div>
-                            <span style={{marginRight:'5px'}}>Точки фактора</span>
+                            <span style={{ marginRight: "5px" }}>Точки фактора</span>
                             <MyInput
                                 type="number"
                                 className={styles.pointsInput}
@@ -175,7 +175,7 @@ export default function ImportedDataTable() {
                             />
                         </div>
                         <div>
-                            <span style={{marginRight: '5px'}}>Точки наработки</span>
+                            <span style={{ marginRight: "5px" }}>Точки наработки</span>
                             <MyInput
                                 type="number"
                                 className={styles.pointsInput}
@@ -272,15 +272,9 @@ export default function ImportedDataTable() {
                             ) : null}
                         </tbody>
                     </table>
+                    <MyButton onClick={handleGetAvgValues} text={"Получить таблицу средних значений"} disabled={!educParamData.length} />
                 </div>
             ) : null}
-
-            <MyButton 
-                onClick={handleGetAvgValues}
-                text={"Получить таблицу средних значений"}
-                disabled={!educParamData.length}
-                
-            />
         </>
     );
 }

@@ -5,6 +5,7 @@ import paramValuesReducer from './slices/importedDataSlices/paramValuesSlice.js'
 import avgValuesReducer from './slices/avgValuesSlice.js'
 import mathModelsReducer from './slices/mathModelsSlice.js'
 import recalcedValuesReducer from './slices/recalcedValuesSlice.js'
+import routesSliceReducer from './slices/routesSlice.js'
 
 
 export const store = configureStore({
@@ -14,13 +15,14 @@ export const store = configureStore({
     paramData: paramValuesReducer,
     avgValuesData: avgValuesReducer,
     mathModels: mathModelsReducer,
-    recalcedValues: recalcedValuesReducer
+    recalcedValues: recalcedValuesReducer,
+    routes: routesSliceReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-        serializableCheck: {
-            ignoredActions: ['mathModels/setFactorMathModel', 'mathModels/setWorkTimeMathModel', 'mathModels/setRecalcMathModel'],
-            ignoredPaths: ['payload.model'],
-        },
-    }),
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware({
+  //       serializableCheck: {
+  //           ignoredActions: ['mathModels/setFactorMathModel', 'mathModels/setWorkTimeMathModel', 'mathModels/setRecalcMathModel'],
+  //           ignoredPaths: ['payload.model'],
+  //       },
+  //   }),
 })

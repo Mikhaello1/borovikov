@@ -6,6 +6,7 @@ import recalcValues from "../helpers/recalcValues";
 import { Table } from "../components/Table";
 import { setRecalcedValues } from "../redux/slices/recalcedValuesSlice";
 import { ScatterPlot } from "../components/Graphic";
+import { setForecastRouteAvailable } from "../redux/slices/routesSlice";
 
 
 export default function Recalc() {
@@ -24,6 +25,7 @@ export default function Recalc() {
 
     const handleGetRecalcValues = () => {
         dispatch(setRecalcedValues(recalcValues(workTimeValues, recalcMathModel, factorMathModel)));
+        dispatch(setForecastRouteAvailable(true))
     };
 
     return (

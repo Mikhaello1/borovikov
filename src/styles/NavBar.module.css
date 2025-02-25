@@ -5,13 +5,28 @@
     display: flex;
     
 }
-.NavBar a{
+.NavBar a, 
+.NavBar span{
     color: white;
     padding: 14px 20px;
     text-decoration: none;
     display: inline-block;
 }
-.NavBar a:hover {
-    background-color: #575757;
+
+.availableRoute{
+    background-color: grey;
 }
 
+.availableRoute:hover{
+    background-color: rgb(85, 85, 85);
+}
+
+.currentRoute{
+    background-color: green;
+
+}
+
+.unavailableRoute{
+    background-color: red;
+    cursor: not-allowed
+}

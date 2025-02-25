@@ -1,14 +1,32 @@
-// const pointsChecker
 
-// export const importDataChecker = (factorData, workTimeData) => {
-//     let flag = false;
-//     let temp = factorData[0];
-
-//     for (let value of factorData){
-//         if(value == 0) return false
-//         temp = value > temp && value;
+// const pointsCheck = (pointsData) => {
+//     let pointsDataCheck = true;
+//     let tempSet = new Set()
+    
+//     for (let el of pointsData){
+//         if (el <= 0) {
+//             pointsDataCheck = false;
+//             break;
+//         }
+//         tempSet.add(el)
 //     }
 
-//     if ()
+//     if(tempSet.length !== pointsData.length) pointsDataCheck = false;
+
+//     return pointsDataCheck;
+// }
+
+// export const importDataChecker = (paramData, factorData, workTimeData) => {
+//     let paramDataCheck = true;
+//     let factorDataCheck = true;
+//     let workTimeDataCheck = true;
+
+    
+
+
+
+    
+
+    
 
 // }
