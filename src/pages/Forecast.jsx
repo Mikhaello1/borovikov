@@ -106,10 +106,13 @@ export default function Forecast() {
             <MyButton text={"Добавить проверку"} onClick={handleAddCheck} />
             <MyButton text={"Подсчет ошибки прогнозирования"} onClick={handleCalcError} />
             {forecastErrors?.length ? 
-                <div>
-                    <Table averages={forecastErrors.map((value) => value * 100 + "%")} columnNames={["t", "ошибка"]} factorData={tValues} condition={(x) => Number(x.slice(0, x.length-1)) <= 10}/> 
+                <>
+                    <div style={{margin: "12px 0"}}>
+                        <Table averages={forecastErrors.map((value) => value * 100 + "%")} columnNames={["t, ч", "ошибка"]} factorData={tValues} condition={(x) => Number(x.slice(0, x.length-1)) <= 10}/> 
+                        
+                    </div>
                     {!satisfyCondition ? <MyButton text={"Ввести другие данные"} onClick={() => location.reload(true)}/> : null}
-                </div>
+                </>
             : null}
             
         </div>

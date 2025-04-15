@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import styles from "../styles/ImportedDataTable.module.css";
 import MyInput from "../components/UI/MyInput";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,6 +18,8 @@ import MyButton from "../components/UI/MyButton";
 import roundNum from "../helpers/roundNum";
 import { setAvgRouteAvailable } from "../redux/slices/routesSlice";
 import { importDataChecker } from "../helpers/importDataChecker";
+import EditTableModal from "../components/modal/editTableModal";
+import Modal from "../components/modal/Modal";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -29,6 +31,12 @@ export default function ImportedDataTable() {
     const paramData = useSelector((state) => state.paramData);
 
     let navigate = useNavigate();
+
+    const [isModalOpen, setIsModalOpen] = useState(true);
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     const isDataValid = useMemo(() => {
         return importDataChecker(educParamData, controlParamData, currencyData, workTimeData);
@@ -52,60 +60,6 @@ export default function ImportedDataTable() {
         else dispatch(setValue({ value: newValue, index }));
     };
 
-    const handleChangeNumOfInstances = (value, setValue) => {
-        let newValue = value;
-        newValue ||= 1;
-        dispatch(setValue({ newLength: newValue, numOfFactorPoints: currencyData.length, numOfWorkTimePoints: workTimeData.length }));
-    };
-
-    const handleChangeNumOfPoints = (value, setValue, indexInRow) => {
-        let newValue = value;
-        newValue ||= 1;
-
-        let newEducParamData = educParamData.map((row, rowIndex) => {
-            let newRow = [...row];
-
-            if (Array.isArray(newRow[indexInRow])) {
-                if (newRow[indexInRow].length > newValue) {
-                    newRow[indexInRow] = newRow[indexInRow].slice(0, newValue);
-                } else if (newRow[indexInRow].length < newValue) {
-                    const currentLength = newRow[indexInRow].length;
-                    newRow[indexInRow] = [...newRow[indexInRow], ...Array(newValue - currentLength).fill(0)];
-                }
-            } else {
-                console.warn(`Элемент в строке ${rowIndex} по индексу ${indexInRow} не является массивом.`);
-            }
-
-            return newRow;
-        });
-
-        let newControlParamData = controlParamData.map((row, rowIndex) => {
-            let newRow = [...row];
-
-            if (Array.isArray(newRow[indexInRow])) {
-                if (newRow[indexInRow].length > newValue) {
-                    newRow[indexInRow] = newRow[indexInRow].slice(0, newValue);
-                } else if (newRow[indexInRow].length < newValue) {
-                    const currentLength = newRow[indexInRow].length;
-                    newRow[indexInRow] = [...newRow[indexInRow], ...Array(newValue - currentLength).fill(0)];
-                }
-            } else {
-                console.warn(`Элемент в контрольной строке ${rowIndex} по индексу ${indexInRow} не является массивом.`);
-            }
-
-            return newRow;
-        });
-
-        dispatch(
-            setParamData({
-                educ: newEducParamData,
-                control: newControlParamData,
-            })
-        );
-
-        dispatch(setValue(newValue));
-    };
-
     const handleGetAvgValues = () => {
         // if(importDataChecker(paramData, currencyData, workTimeData))
 
@@ -126,68 +80,24 @@ export default function ImportedDataTable() {
         navigate("/avgValues");
     };
 
-    const handleControlSample = (event) => {
-        const isChecked = event.target.checked;
-
-        let newArr = [];
-        console.log(isChecked);
-        if (isChecked) {
-            newArr = new Array(3).fill(null).map(() => [new Array(currencyData.length).fill(0), new Array(workTimeData.length).fill(0)]);
-            dispatch(setParamData({ control: newArr }));
-        } else {
-            dispatch(setParamData({ control: [] }));
-        }
-    };
-
     return (
         <div style={{ position: "relative" }} className={styles.importPage}>
             {educParamData?.length ? (
                 <div className={styles.ImportedDataTable}>
-                    <input type="checkbox" checked={controlParamData.length > 0} onChange={(e) => handleControlSample(e)} />
-                    наличие контрольной выборки
-                    <br />
-                    <div className={styles.inputSection}>
-                        <div>
-                            <span style={{ marginRight: "5px" }}>Экземпляров обучающей выборки</span>
-                            <MyInput
-                                type="number"
-                                className={styles.pointsInput}
-                                min={1}
-                                value={educParamData.length}
-                                onChange={(e) => handleChangeNumOfInstances(e.currentTarget.value, setEducParamPoints)}
-                            />
-                        </div>
-                        <div>
-                            <span style={{ marginRight: "5px" }}>Экземпляров контрольной выборки</span>
-                            <MyInput
-                                type="number"
-                                className={styles.pointsInput}
-                                min={1}
-                                value={controlParamData.length}
-                                onChange={(e) => handleChangeNumOfInstances(e.currentTarget.value, setControlParamPoints)}
-                            />
-                        </div>
-                        <div>
-                            <span style={{ marginRight: "5px" }}>Точки фактора</span>
-                            <MyInput
-                                type="number"
-                                className={styles.pointsInput}
-                                min={1}
-                                value={currencyData.length}
-                                onChange={(e) => handleChangeNumOfPoints(e.currentTarget.value, setFactorPoints, 0)}
-                            />
-                        </div>
-                        <div>
-                            <span style={{ marginRight: "5px" }}>Точки наработки</span>
-                            <MyInput
-                                type="number"
-                                className={styles.pointsInput}
-                                min={1}
-                                value={workTimeData.length}
-                                onChange={(e) => handleChangeNumOfPoints(e.currentTarget.value, setWorkTimePoints, 1)}
-                            />
-                        </div>
-                    </div>
+
+                    <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+                        <EditTableModal />
+                    </Modal>
+
+                    <MyButton 
+                        style={{margin: "10px 10px 10px"}}
+                        onClick={() => setIsModalOpen(true)}    
+                    >
+                        Редактировать таблицу
+                    </MyButton>
+                    
+                    <ExcelImporter/>
+
                     <table style={{ borderCollapse: "collapse", border: "1px solid black", width: "100vw", textAlign: "center" }}>
                         <thead>
                             <tr>
@@ -287,16 +197,25 @@ export default function ImportedDataTable() {
                 </div>
             ) : (
                 <div className={styles.inputData}>
-                    <div>Введите данные:</div>
+                    <div
+                        style={{
+                            fontSize: "30px",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        Ввод данных
+                    </div>
+
+                    <img className={styles.tableFormatImg} src="tableFormat.jpg" alt="формат таблицы" />
 
                     <div>
                         <ExcelImporter />
                     </div>
                     <div>ИЛИ</div>
                     <div>
-                        <button onClick={handleHandInput} disabled={educParamData.length}>
+                        <MyButton onClick={handleHandInput} disabled={educParamData.length}>
                             Ручной ввод
-                        </button>
+                        </MyButton>
                     </div>
                 </div>
             )}

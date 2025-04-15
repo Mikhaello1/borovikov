@@ -1,7 +1,7 @@
 import { memo } from "react"
 import styles from "../../styles/MyButton.module.css"
 
-function MyButton({text, onClick, disabled, style}){
+function MyButton({text, onClick, disabled, style, children}){
 
     return (
         <button
@@ -9,7 +9,7 @@ function MyButton({text, onClick, disabled, style}){
             disabled={disabled}
             style={style}
             className={styles.MyButton}>
-            {text}
+            {text || children}
         </button>
     )
 }
