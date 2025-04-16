@@ -20,6 +20,7 @@ import { setAvgRouteAvailable } from "../redux/slices/routesSlice";
 import { importDataChecker } from "../helpers/importDataChecker";
 import EditTableModal from "../components/modal/editTableModal";
 import Modal from "../components/modal/Modal";
+import { setIsEditTableModalOpen } from "../redux/slices/modalsSlice";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -29,14 +30,18 @@ export default function ImportedDataTable() {
     const educParamData = useSelector((state) => state.paramData.educ);
     const controlParamData = useSelector((state) => state.paramData.control);
     const paramData = useSelector((state) => state.paramData);
+    const isEditTableModalOpen = useSelector((state) => state.modals.isEditTableModalOpen);
+    const factor = useSelector(state => state.quantities.factor);
+    const parameter = useSelector(state => state.quantities.paramter);
 
     let navigate = useNavigate();
 
-    const [isModalOpen, setIsModalOpen] = useState(true);
-
     const handleCloseModal = () => {
-        setIsModalOpen(false);
+        dispatch(setIsEditTableModalOpen(false))
     };
+    const handleOpenModal = () => {
+        dispatch(setIsEditTableModalOpen(true))
+    }
 
     const isDataValid = useMemo(() => {
         return importDataChecker(educParamData, controlParamData, currencyData, workTimeData);
@@ -85,13 +90,13 @@ export default function ImportedDataTable() {
             {educParamData?.length ? (
                 <div className={styles.ImportedDataTable}>
 
-                    <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+                    <Modal isOpen={isEditTableModalOpen} onClose={handleCloseModal}>
                         <EditTableModal />
                     </Modal>
 
                     <MyButton 
                         style={{margin: "10px 10px 10px"}}
-                        onClick={() => setIsModalOpen(true)}    
+                        onClick={handleOpenModal}    
                     >
                         Редактировать таблицу
                     </MyButton>
@@ -102,10 +107,10 @@ export default function ImportedDataTable() {
                         <thead>
                             <tr>
                                 <td rowSpan={2} style={styles.td}>
-                                    Параметр Y
+                                    {parameter || "??"}
                                 </td>
-                                <td colSpan={currencyData.length}>ток коллектор</td>
-                                <td colSpan={workTimeData.length}>наработка</td>
+                                <td colSpan={currencyData.length}>{factor || "??"}</td>
+                                <td colSpan={workTimeData.length}>t</td>
                             </tr>
                             <tr>
                                 {currencyData.map((value, index) => (

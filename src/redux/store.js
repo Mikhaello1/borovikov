@@ -8,6 +8,7 @@ import recalcedValuesReducer from "./slices/recalcedValuesSlice.js";
 import routesSliceReducer from "./slices/routesSlice.js";
 import forecastErrorsReducer from "./slices/forecastErrorsSlice.js";
 import quantitiesReducer from "./slices/importedDataSlices/quantitiesSlice.js";
+import modalsReducer from "./slices/modalsSlice.js"
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
         routes: routesSliceReducer,
         forecastErrors: forecastErrorsReducer,
         quantities: quantitiesReducer,
+        modals: modalsReducer,
     },
     // middleware: (getDefaultMiddleware) =>
     //   getDefaultMiddleware({

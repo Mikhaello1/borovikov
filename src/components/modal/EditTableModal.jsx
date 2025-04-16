@@ -1,17 +1,18 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "../../styles/EditTableModal.module.css"
+import styles from "../../styles/EditTableModal.module.css";
 import MyInput from "../UI/MyInput";
+import { setFactorQuantity, setParameterQuantity } from "../../redux/slices/importedDataSlices/quantitiesSlice";
 
 export default function EditTableModal() {
-
     const dispatch = useDispatch();
 
     const currencyData = useSelector((state) => state.factorData.values);
     const workTimeData = useSelector((state) => state.workTimeData.values);
     const educParamData = useSelector((state) => state.paramData.educ);
     const controlParamData = useSelector((state) => state.paramData.control);
-
+    const factor = useSelector((state) => state.quantities.factor);
+    const parameter = useSelector((state) => state.quantities.parameter);
 
     const handleControlSample = (event) => {
         const isChecked = event.target.checked;
@@ -81,10 +82,15 @@ export default function EditTableModal() {
 
     return (
         <div>
-            <input type="checkbox" checked={controlParamData.length > 0} onChange={(e) => handleControlSample(e)} />
-            наличие контрольной выборки
-            <br />
             <div className={styles.inputSection}>
+                <div>
+                    <span style={{ marginRight: "5px" }}>Фактор</span>
+                    <MyInput className={styles.pointsInput} value={factor} onChange={(e) => dispatch(setFactorQuantity(e.target.value))} />
+                </div>
+                <div>
+                    <span style={{ marginRight: "5px" }}>Параметр</span>
+                    <MyInput className={styles.pointsInput} value={parameter} onChange={(e) => dispatch(setParameterQuantity(e.target.value))} />
+                </div>
                 <div>
                     <span style={{ marginRight: "5px" }}>Экземпляров обучающей выборки</span>
                     <MyInput
@@ -124,6 +130,11 @@ export default function EditTableModal() {
                         value={workTimeData.length}
                         onChange={(e) => handleChangeNumOfPoints(e.currentTarget.value, setWorkTimePoints, 1)}
                     />
+                </div>
+                <div>
+                    <br />
+                    <input type="checkbox" checked={controlParamData.length > 0} onChange={(e) => handleControlSample(e)} />
+                    Наличие контрольной выборки
                 </div>
             </div>
         </div>
