@@ -19,6 +19,9 @@ export default function Recalc() {
     const { recalcedFactorValues, recalcedYParamValues } = useSelector((state) => state.recalcedValues);
     const workTimeValues = useSelector((state) => state.workTimeData.values);
     const factorValues = useSelector((state) => state.factorData.values);
+    const factor = useSelector((state) => state.quantities.factor);
+    const parameter = useSelector((state) => state.quantities.parameter);
+    
 
     const handleGetRecalcModel = () => {
         dispatch(setRecalcMathModel(recalcModel(workTimeValues, workTimeAverages, factorValues, factorAverages)));
@@ -43,7 +46,7 @@ export default function Recalc() {
                 <>
                     <h3>Значения пересчёта:</h3>
                     <div style={{display: 'flex'}}>
-                        <Table averages={recalcedYParamValues} columnNames={["Iим", "U"]} factorData={recalcedFactorValues} />
+                        <Table averages={recalcedYParamValues} columnNames={[`${factor}им`, parameter]} factorData={recalcedFactorValues} />
                         <ScatterPlot xData={recalcedFactorValues} yData={recalcedYParamValues} style={{ height: "250px", width: "500px" }} axisNames={["Iим", "U"]} />
                     </div>
                 </>

@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../../styles/EditTableModal.module.css";
 import MyInput from "../UI/MyInput";
 import { setFactorQuantity, setParameterQuantity } from "../../redux/slices/importedDataSlices/quantitiesSlice";
+import { setEducParamPoints, setControlParamPoints } from "../../redux/slices/importedDataSlices/paramValuesSlice";
+import { setFactorPoints } from "../../redux/slices/importedDataSlices/factorValuesSlice";
+import { setWorkTimePoints } from "../../redux/slices/importedDataSlices/workTimeValuesSlice";
+import { setParamData } from "../../redux/slices/importedDataSlices/paramValuesSlice";
 
 export default function EditTableModal() {
     const dispatch = useDispatch();

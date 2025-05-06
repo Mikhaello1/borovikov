@@ -2,7 +2,7 @@ import { memo } from "react";
 import styles from "../styles/Table.module.css"
 
 export const Table = memo(({ averages, columnNames, factorData, numColumnAmount, condition }) => {
-//               зн-я второй колонки, подпись колонок, зн-я первой колонки, количество строчек
+
     return (
         <>
             <table className={styles.table}>

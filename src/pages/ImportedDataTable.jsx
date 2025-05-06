@@ -32,7 +32,7 @@ export default function ImportedDataTable() {
     const paramData = useSelector((state) => state.paramData);
     const isEditTableModalOpen = useSelector((state) => state.modals.isEditTableModalOpen);
     const factor = useSelector(state => state.quantities.factor);
-    const parameter = useSelector(state => state.quantities.paramter);
+    const parameter = useSelector(state => state.quantities.parameter);
 
     let navigate = useNavigate();
 
@@ -47,8 +47,6 @@ export default function ImportedDataTable() {
         return importDataChecker(educParamData, controlParamData, currencyData, workTimeData);
     }, [educParamData, controlParamData, currencyData, workTimeData]);
 
-    console.log(isDataValid);
-
     const handleHandInput = () => {
         let newArr = [];
         newArr = new Array(3).fill(null).map(() => [new Array(3).fill(0), new Array(3).fill(0)]);
@@ -59,24 +57,25 @@ export default function ImportedDataTable() {
     };
 
     const handleInputChange = (e, setValue, index, indexInArr) => {
-        let newValue = e.currentTarget.value || 0;
+        let newValue = e.currentTarget.value; // Просто получаем значение
+
+        if (newValue.startsWith('0') && newValue.length > 1 && !isNaN(parseInt(newValue.substring(1)))) {
+            newValue = newValue.substring(1);
+          }
 
         if (indexInArr !== undefined) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
         else dispatch(setValue({ value: newValue, index }));
     };
 
     const handleGetAvgValues = () => {
-        // if(importDataChecker(paramData, currencyData, workTimeData))
 
         let averages = calcAverages(paramData);
-        console.log(averages);
+
         averages.forEach((row) => {
             return row.map((el) => {
                 return roundNum(el);
             });
         });
-        console.log(1111);
-        console.log(averages);
 
         dispatch(setFactorAverages(averages[0]));
         dispatch(setWorkTimeAverages(averages[1]));
@@ -127,11 +126,11 @@ export default function ImportedDataTable() {
                         </thead>
                         <tbody>
                             <tr>
-                                <td colSpan={1000}>экземпляры обучающей выборки</td>
+                                <td colSpan={1000}>Экземпляры обучающей выборки</td>
                             </tr>
                             {educParamData.map((row, rowIndex) => (
                                 <tr key={`param-row-${rowIndex}`}>
-                                    <td>параметр {rowIndex + 1}</td>
+                                    <td>Экземпляр №{rowIndex + 1}</td>
                                     {row[0].map((value, columnIndex) => (
                                         <td key={`param-column-${columnIndex}`}>
                                             <MyInput
@@ -157,12 +156,12 @@ export default function ImportedDataTable() {
                             {controlParamData.length > 0 ? (
                                 <>
                                     <tr>
-                                        <td colSpan={1000}>экземпляры контрольной выборки</td>
+                                        <td colSpan={1000}>Экземпляры контрольной выборки</td>
                                     </tr>
                                     {controlParamData.map((row, rowIndex) => {
                                         return (
                                             <tr key={`control-param-row-${rowIndex}`}>
-                                                <td>параметр {rowIndex + 1}</td>
+                                                <td>Экземпляр №{rowIndex + 1}</td>
                                                 {row[0].map((value, columnIndex) => (
                                                     <td key={`control-param-column-${columnIndex}`}>
                                                         <MyInput

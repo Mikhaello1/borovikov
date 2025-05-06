@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import styles from "../styles/AvgValuesTable.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setFactorMathModel, setWorkTimeMathModel } from "../redux/slices/mathModelsSlice";
@@ -9,6 +9,7 @@ import roundNum from "../helpers/roundNum";
 import { setRecalcRouteAvailable } from "../redux/slices/routesSlice";
 import MyButton from "../components/UI/MyButton";
 import { useNavigate } from "react-router";
+import { findBestModel, getModels } from "../helpers/findBestModel";
 
 function AvgValuesTable() {
     const navigate = useNavigate();
@@ -20,8 +21,10 @@ function AvgValuesTable() {
     const avgWorkTimeValues = useSelector((state) => state.avgValuesData.workTimeAverages);
     const currencyData = useSelector((state) => state.factorData.values);
     const workTimeData = useSelector((state) => state.workTimeData.values);
-    const factorMathModel = useSelector((state) => state.mathModels.factorMathModel)
-    const workTimeMathModel = useSelector((state) => state.mathModels.workTimeMathModel)
+    const factorMathModel = useSelector((state) => state.mathModels.factorMathModel);
+    const workTimeMathModel = useSelector((state) => state.mathModels.workTimeMathModel);
+    const factor = useSelector((state) => state.quantities.factor);
+    const parameter = useSelector((state) => state.quantities.parameter);
 
     useEffect(() => {
         if (goNext.size >= 2) dispatch(setRecalcRouteAvailable(true));
@@ -29,29 +32,54 @@ function AvgValuesTable() {
     }, [goNext]);
 
     return (
-        <div className={styles.avgValuesMain} style={{ position: "relative" }}>
-            <div>Средние значения обучающей выборки:</div>
-            {avgFactorValues.length ? (
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <Table averages={avgFactorValues.map((el) => roundNum(el))} columnNames={["Iк", "U"]} factorData={currencyData} setMathModelValue={setFactorMathModel} />
-                        <MathModel xValues={currencyData} yValues={avgFactorValues} factorName={"ток коллектора"} setMathModelValue={setFactorMathModel} setGoNext={setGoNext} />
+        <div className={styles.avgValuesMain} style={{ position: "relative", display: "flex", height: '100vh' }}>
+            {/* <div>Средние значения обучающей выборки:</div> */}
+            <div style={{ width: '50%', padding: '10px', boxSizing: 'border-box' }}>
+                {avgFactorValues.length ? (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <Table
+                            averages={avgFactorValues.map((el) => roundNum(el))}
+                            columnNames={[factor, parameter]}
+                            factorData={currencyData}
+                            setMathModelValue={setFactorMathModel}
+                        />
+                        <MathModel
+                            xValues={currencyData}
+                            yValues={avgFactorValues}
+                            factorName={"ток коллектора"}
+                            setMathModelValue={setFactorMathModel}
+                            setGoNext={setGoNext}
+                            parameter={parameter}
+                            factor={factor}
+                        />
+                        <ScatterPlot xData={currencyData} yData={avgFactorValues} style={{ height: "300px", width: "100%" }} axisNames={[factor, parameter]} />
                     </div>
+                ) : null}
+            </div>
 
-                    <ScatterPlot xData={currencyData} yData={avgFactorValues} style={{ height: "300px", width: "500px" }} axisNames={["Iк", "U"]} />
-                </div>
-            ) : null}
+            <div style={{ width: '50%', padding: '10px', boxSizing: 'border-box' }}>
+                {avgWorkTimeValues.length ? (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <Table
+                            averages={avgWorkTimeValues.map((el) => roundNum(el))}
+                            columnNames={["t", parameter]}
+                            factorData={workTimeData}
+                            setMathModelValue={setWorkTimeMathModel}
+                        />
 
-            {avgWorkTimeValues.length ? (
-                <div style={{ display: "flex" }}>
-                    <div>
-                        <Table averages={avgWorkTimeValues.map((el) => roundNum(el))} columnNames={["t", "U"]} factorData={workTimeData} setMathModelValue={setWorkTimeMathModel} />
-
-                        <MathModel xValues={workTimeData} yValues={avgWorkTimeValues} factorName={"наработка"} setMathModelValue={setWorkTimeMathModel} setGoNext={setGoNext} />
+                        <MathModel
+                            xValues={workTimeData}
+                            yValues={avgWorkTimeValues}
+                            factorName={"наработка"}
+                            setMathModelValue={setWorkTimeMathModel}
+                            setGoNext={setGoNext}
+                            parameter={parameter}
+                            factor={factor}
+                        />
+                        <ScatterPlot xData={workTimeData} yData={avgWorkTimeValues} style={{ width: "100%", height: "300px" }} axisNames={["t", parameter]} />
                     </div>
-                    <ScatterPlot xData={workTimeData} yData={avgWorkTimeValues} style={{ width: "500px", height: "300px" }} axisNames={["t", "U"]} />
-                </div>
-            ) : null}
+                ) : null}
+            </div>
 
             <div
                 style={{
