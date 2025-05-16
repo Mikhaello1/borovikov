@@ -10,16 +10,18 @@ import { useCallback, useMemo, useState } from "react";
 import MyButton from "../components/UI/MyButton";
 import { MdCancel } from "react-icons/md";
 import { setErrors } from "../redux/slices/forecastErrorsSlice";
+import { ForecastErrorTable } from "../components/ForecastErorrTable/ForecastErrorTable";
 
 export default function Forecast() {
-    const [tValues, setTValues] = useState([1, 2, 34]);
-    
-    const dispatch = useDispatch()
+    const [tValues, setTValues] = useState([12000, 15000, 18000, 21000]);
+    const [tValuesInTable, setTValuesInTable] = useState([]);
+
+    const dispatch = useDispatch();
 
     const workTimeValues = useSelector((state) => state.workTimeData.values);
     const controlParamData = useSelector((state) => state.paramData.control);
     const factorValues = useSelector((state) => state.factorData.values);
-    const forecastErrors = useSelector(state => state.forecastErrors.errors);
+    const forecastErrors = useSelector((state) => state.forecastErrors.errors);
 
     let controlWorkTimeParamData = controlParamData.map((row) => row[1]);
     let controlFactorParamData = controlParamData.map((row) => row[0]);
@@ -72,49 +74,64 @@ export default function Forecast() {
         let errors = forecastValues.map((el, index) => {
             return roundNum(calcForecastError(el, trulyYValues[index]));
         });
-        dispatch(setErrors(errors))
-        
-    }, [forecastValues, trulyYValues]);
+        console.log(errors);
+        setTValuesInTable(tValues);
+        dispatch(setErrors(errors));
+    }, [forecastValues, trulyYValues, tValues]);
 
     let satisfyCondition = useMemo(() => {
-        if(forecastErrors){
-            for (let el of forecastErrors){
-                if (el <= 10){
+        if (forecastErrors) {
+            for (let el of forecastErrors) {
+                if (Number(el) <= 3) {
                     return false;
                 }
             }
         }
-        return true
-    }, [forecastErrors])
-
-
-    
+        return true;
+    }, [forecastErrors]);
 
     return (
-        <div>
-            <h2>При каких значениях t провести проверку?</h2>
-
-            {tValues.map((value, index) => {
-                return (
-                    <div key={`forecastErrorValue ${index}`} style={{ display: "flex", alignItems: "center", height: "20px", margin: "20px" }}>
-                        <h2>t = </h2>
-                        <MyInput type={"number"} value={value} onChange={(e) => handleTValueChange(e.target.value, index)} style={{ marginLeft: "10px", width: "100px" }} />
-                        <MdCancel onClick={() => handleDeleteCheck(index)} style={{ marginLeft: "10px", height: "20px", width: "20px" }} />
+        <div style={{ display: "flex", height: "90vh" }}>
+            <div style={{ display: "flex", flexDirection: "column", borderRight: "1px solid black", padding: "0 10px" }}>
+                <h3>При каких значениях t провести проверку?</h3>
+                <div style={{ height: "60vh", overflow: "auto", paddingTop: "15px", paddingBottom: "50px"}}>
+                    {tValues.map((value, index) => {
+                        return (
+                            <div key={`forecastErrorValue ${index}`} style={{ display: "flex", alignItems: "center", height: "20px", marginBottom: "25px", marginLeft: "30px"}}>
+                                <h2>t = </h2>
+                                {/* <MyInput value={value} onChange={(e) => handleTValueChange(e.target.value, index)} /> */}
+                                <input style={{ textAlign: "end", height: "25px", fontSize: "20px", width: "150px", marginLeft: "5px" }} value={value} onChange={(e) => handleTValueChange(e.target.value, index)} />
+                                <MdCancel onClick={() => handleDeleteCheck(index)} style={{ marginLeft: "10px", height: "20px", width: "20px" }} />
+                            </div>
+                        );
+                    })}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", position: "absolute", bottom: 20 }}>
+                    <MyButton text={"Добавить проверку"} onClick={handleAddCheck} />
+                    <MyButton text={"Подсчет ошибки прогнозирования"} onClick={handleCalcError} />
+                </div>
+            </div>
+            <div style={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {tValuesInTable.length && forecastErrors?.length ? (
+                    <div>
+                        <div>
+                            <ForecastErrorTable
+                                averages={forecastErrors.map((value) => value * 100 + "%")}
+                                columnNames={["t, ч", "Δ"]}
+                                factorData={tValuesInTable}
+                                condition={(x) => Number(x.slice(0, x.length - 1)) <= 10}
+                            />
+                        </div>
+                        {!satisfyCondition ? (
+                            <div style={{ marginTop: "10px" }}>
+                                <MyButton text={"Ввести другие данные"} onClick={() => location.reload(true)} />
+                            </div>
+                        ) : null}
                     </div>
-                );
-            })}
-            <MyButton text={"Добавить проверку"} onClick={handleAddCheck} />
-            <MyButton text={"Подсчет ошибки прогнозирования"} onClick={handleCalcError} />
-            {forecastErrors?.length ? 
-                <>
-                    <div style={{margin: "12px 0"}}>
-                        <Table averages={forecastErrors.map((value) => value * 100 + "%")} columnNames={["t, ч", "ошибка"]} factorData={tValues} condition={(x) => Number(x.slice(0, x.length-1)) <= 10}/> 
-                        
-                    </div>
-                    {!satisfyCondition ? <MyButton text={"Ввести другие данные"} onClick={() => location.reload(true)}/> : null}
-                </>
-            : null}
-            
+                ) : (
+                    <p>Нажмите "Подсчет ошибки прогнозирования"</p>
+                )}
+            </div>
         </div>
     );
 }

@@ -21,10 +21,10 @@ export default function Recalc() {
     const factorValues = useSelector((state) => state.factorData.values);
     const factor = useSelector((state) => state.quantities.factor);
     const parameter = useSelector((state) => state.quantities.parameter);
-    
 
     const handleGetRecalcModel = () => {
-        dispatch(setRecalcMathModel(recalcModel(workTimeValues, workTimeAverages, factorValues, factorAverages)));
+        console.log(factor, parameter);
+        dispatch(setRecalcMathModel(recalcModel(workTimeValues, workTimeAverages, factorValues, factorAverages, parameter, factor)));
     };
 
     const handleGetRecalcValues = () => {
@@ -33,33 +33,43 @@ export default function Recalc() {
     };
 
     return (
-        <div style={{position: 'relative'}}> 
-            <div style={{display: 'flex', alignItems: "center", marginBottom: '10px'}}>
+        <div style={{ position: "relative" }}>
+            <div style={{ display: "flex", alignItems: "center", margin: "5px 0 10px 5px" }}>
                 <MyButton text={"Получить модель пересчёта"} onClick={handleGetRecalcModel} />
-
-                <div style={{fontSize: '20px', marginLeft: '10px'}}>{recalcMathModel.formula}</div>
             </div>
 
-            <MyButton text={"Получить значения пересчёта"} onClick={handleGetRecalcValues} />
-
-            {recalcedYParamValues.length ? (
-                <>
-                    <h3>Значения пересчёта:</h3>
-                    <div style={{display: 'flex'}}>
-                        <Table averages={recalcedYParamValues} columnNames={[`${factor}им`, parameter]} factorData={recalcedFactorValues} />
-                        <ScatterPlot xData={recalcedFactorValues} yData={recalcedYParamValues} style={{ height: "250px", width: "500px" }} axisNames={["Iим", "U"]} />
+            <div style={{ marginLeft: "5px" }}>
+                <MyButton text={"Получить значения пересчёта"} onClick={handleGetRecalcValues} />
+            </div>
+            <div style={{ marginLeft: "30%", marginTop: "5%" }}>
+                {recalcMathModel.formula && (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <h3 style={{ maringBottom: "0" }}>Модель пересчёта:</h3>
+                        <div style={{ fontSize: "20px", marginLeft: "10px" }}>{recalcMathModel.formula}</div>
                     </div>
-                </>
-            ) : null}
+                )}
+
+                {recalcedYParamValues.length ? (
+                    <>
+                        <h3 style={{ marginTop: "0" }}>Значения пересчёта:</h3>
+                        <div style={{ display: "flex" }}>
+                            <div style={{ marginRight: "20px" }}>
+                                <Table averages={recalcedYParamValues} columnNames={[`${factor}им`, parameter]} factorData={recalcedFactorValues} />
+                            </div>
+                            <ScatterPlot xData={recalcedFactorValues} yData={recalcedYParamValues} style={{ height: "250px", width: "500px" }} axisNames={["Iим", "U"]} />
+                        </div>
+                    </>
+                ) : null}
+            </div>
 
             <div
                 style={{
                     position: "absolute",
-                    top: 0,
-                    right: 0,
+                    top: 1,
+                    right: 5,
                 }}
             >
-                <MyButton text={'Нахождение ошибки прогнозирования'} onClick={() => navigate('/forecast')} disabled={!recalcedYParamValues.length}/>
+                <MyButton text={"Нахождение ошибки прогнозирования"} onClick={() => navigate("/forecast")} disabled={!recalcedYParamValues.length} />
             </div>
         </div>
     );

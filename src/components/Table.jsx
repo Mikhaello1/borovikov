@@ -5,7 +5,7 @@ export const Table = memo(({ averages, columnNames, factorData, numColumnAmount,
 
     return (
         <>
-            <table className={styles.table}>
+            <table className={styles.table} style={{width: "100%", height: "100%"}}>
                 <thead>
                     <tr>
                         {numColumnAmount && <th>Номер экземпляра контрольной выборки</th>}
