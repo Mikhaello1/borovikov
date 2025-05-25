@@ -8,7 +8,9 @@ import recalcedValuesReducer from "./slices/recalcedValuesSlice.js";
 import routesSliceReducer from "./slices/routesSlice.js";
 import forecastErrorsReducer from "./slices/forecastErrorsSlice.js";
 import quantitiesReducer from "./slices/importedDataSlices/quantitiesSlice.js";
-import modalsReducer from "./slices/modalsSlice.js"
+import modalsReducer from "./slices/modalsSlice.js";
+import chosenModelReducer from "./slices/chosenModelSlice.js";
+import createdModelsReducer from "./slices/createdModelsSlice.js";
 
 export const store = configureStore({
     reducer: {
@@ -22,7 +24,29 @@ export const store = configureStore({
         forecastErrors: forecastErrorsReducer,
         quantities: quantitiesReducer,
         modals: modalsReducer,
+        chosenModel: chosenModelReducer,
+        createdModels: createdModelsReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [
+                    "mathModels/setRecalcMathModel",
+                    "mathModels/setFactorMathModel",
+                    "mathModels/setWorkTimeMathModel"
+                ],
+                ignoredActionPaths: [
+                    "payload.getFormula",
+                    "payload.calcValue", 
+                ],
+                ignoredPaths: [
+                    "mathModels.recalcMathModel.getFormula",
+                    "mathModels.recalcMathModel.calcValue", 
+                    "mathModels.factorMathModel.calcValue",
+                    "mathModels.workTimeMathModel.calcValue",
+                ],
+            },
+        }),
     // middleware: (getDefaultMiddleware) =>
     //   getDefaultMiddleware({
     //       serializableCheck: {

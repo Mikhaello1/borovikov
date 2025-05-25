@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import styles from "../styles/ImportedDataTable.module.css";
 import MyInput from "../components/UI/MyInput";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,21 +6,19 @@ import { updateFactorValue } from "../redux/slices/importedDataSlices/factorValu
 import { updateWorkTimeValue } from "../redux/slices/importedDataSlices/workTimeValuesSlice";
 import { updateEducParamValue } from "../redux/slices/importedDataSlices/paramValuesSlice";
 import { updateControlParamValue } from "../redux/slices/importedDataSlices/paramValuesSlice";
-import { setControlParamPoints, setEducParamPoints } from "../redux/slices/importedDataSlices/paramValuesSlice";
 import { setFactorPoints } from "../redux/slices/importedDataSlices/factorValuesSlice";
 import { setWorkTimePoints } from "../redux/slices/importedDataSlices/workTimeValuesSlice";
 import { setParamData } from "../redux/slices/importedDataSlices/paramValuesSlice";
-import { calcAverages } from "../helpers/calcAverages";
-import { setFactorAverages, setWorkTimeAverages } from "../redux/slices/avgValuesSlice";
+
 import ExcelImporter from "../components/ExcelImport";
 import { useNavigate } from "react-router";
 import MyButton from "../components/UI/MyButton";
-import roundNum from "../helpers/roundNum";
-import { setAvgRouteAvailable } from "../redux/slices/routesSlice";
+
 import { importDataChecker } from "../helpers/importDataChecker";
 import EditTableModal from "../components/modal/editTableModal";
 import Modal from "../components/modal/Modal";
 import { setIsEditTableModalOpen } from "../redux/slices/modalsSlice";
+import StepBar from "../components/UI/StepBar";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -31,17 +29,19 @@ export default function ImportedDataTable() {
     const controlParamData = useSelector((state) => state.paramData.control);
     const paramData = useSelector((state) => state.paramData);
     const isEditTableModalOpen = useSelector((state) => state.modals.isEditTableModalOpen);
-    const factor = useSelector(state => state.quantities.factor);
-    const parameter = useSelector(state => state.quantities.parameter);
+    const factor = useSelector((state) => state.quantities.factor);
+    const parameter = useSelector((state) => state.quantities.parameter);
+    const factorEI = useSelector((state) => state.quantities.factorEI);
+    const parameterEI = useSelector((state) => state.quantities.parameterEI);
 
     let navigate = useNavigate();
 
     const handleCloseModal = () => {
-        dispatch(setIsEditTableModalOpen(false))
+        dispatch(setIsEditTableModalOpen(false));
     };
     const handleOpenModal = () => {
-        dispatch(setIsEditTableModalOpen(true))
-    }
+        dispatch(setIsEditTableModalOpen(true));
+    };
 
     const isDataValid = useMemo(() => {
         return importDataChecker(educParamData, controlParamData, currencyData, workTimeData);
@@ -59,57 +59,41 @@ export default function ImportedDataTable() {
     const handleInputChange = (e, setValue, index, indexInArr) => {
         let newValue = e.currentTarget.value; // Просто получаем значение
 
-        if (newValue.startsWith('0') && newValue.length > 1 && !isNaN(parseInt(newValue.substring(1)))) {
+        if (newValue.startsWith("0") && newValue.length > 1 && !isNaN(parseInt(newValue.substring(1)))) {
             newValue = newValue.substring(1);
-          }
+        }
 
         if (indexInArr !== undefined) dispatch(setValue({ value: parseFloat(newValue), rowIndex: index[0], columnIndex: index[1], indexInArr }));
         else dispatch(setValue({ value: newValue, index }));
-    };
-
-    const handleGetAvgValues = () => {
-
-        let averages = calcAverages(paramData);
-
-        averages.forEach((row) => {
-            return row.map((el) => {
-                return roundNum(el);
-            });
-        });
-
-        dispatch(setFactorAverages(averages[0]));
-        dispatch(setWorkTimeAverages(averages[1]));
-        dispatch(setAvgRouteAvailable(true));
-
-        navigate("/avgValues");
     };
 
     return (
         <div style={{ position: "relative" }} className={styles.importPage}>
             {educParamData?.length ? (
                 <div className={styles.ImportedDataTable}>
-
+                    <StepBar nextRoute={"/avgValues"} />
                     <Modal isOpen={isEditTableModalOpen} onClose={handleCloseModal}>
                         <EditTableModal />
                     </Modal>
 
-                    <MyButton 
-                        style={{margin: "10px 10px 10px"}}
-                        onClick={handleOpenModal}    
-                    >
+                    <MyButton style={{ margin: "10px 10px 10px" }} onClick={handleOpenModal}>
                         Редактировать таблицу
                     </MyButton>
-                    
-                    <ExcelImporter/>
+
+                    <ExcelImporter />
 
                     <table style={{ borderCollapse: "collapse", border: "1px solid black", width: "100vw", textAlign: "center" }}>
                         <thead>
                             <tr>
                                 <td rowSpan={2} style={styles.td}>
-                                    {parameter || "??"}
+                                    {`Параметр ${parameter || "??"}, ${parameterEI || "??"}`}
+                                    <br />
+                                    для экземпляров объединённой
+                                    <br /> выборки
                                 </td>
-                                <td colSpan={currencyData.length}>{factor || "??"}</td>
-                                <td colSpan={workTimeData.length}>t</td>
+
+                                <td colSpan={currencyData.length}>{`${factor}, ${factorEI}` || "??"}</td>
+                                <td colSpan={workTimeData.length}>t, ч</td>
                             </tr>
                             <tr>
                                 {currencyData.map((value, index) => (
@@ -130,7 +114,9 @@ export default function ImportedDataTable() {
                             </tr>
                             {educParamData.map((row, rowIndex) => (
                                 <tr key={`param-row-${rowIndex}`}>
-                                    <td>Экземпляр №{rowIndex + 1}</td>
+                                    <td>
+                                        Параметр {parameter} <br /> для {rowIndex + 1}-го экземпляра
+                                    </td>
                                     {row[0].map((value, columnIndex) => (
                                         <td key={`param-column-${columnIndex}`}>
                                             <MyInput
@@ -161,7 +147,9 @@ export default function ImportedDataTable() {
                                     {controlParamData.map((row, rowIndex) => {
                                         return (
                                             <tr key={`control-param-row-${rowIndex}`}>
-                                                <td>Экземпляр №{rowIndex + 1}</td>
+                                                <td>
+                                                    Параметр {parameter} <br /> для {rowIndex + 1}-го экземпляра
+                                                </td>
                                                 {row[0].map((value, columnIndex) => (
                                                     <td key={`control-param-column-${columnIndex}`}>
                                                         <MyInput
@@ -192,11 +180,11 @@ export default function ImportedDataTable() {
                     <div
                         style={{
                             position: "absolute",
-                            top: 0,
-                            right: 0,
+                            top: 10,
+                            right: 10,
                         }}
                     >
-                        <MyButton onClick={handleGetAvgValues} text={"Получить таблицу средних значений"} disabled={!isDataValid} />
+                        {/* <MyButton onClick={handleGetAvgValues} text={"Получить таблицу средних значений"} disabled={!isDataValid} /> */}
                     </div>
                 </div>
             ) : (

@@ -22,4 +22,3 @@ export default function roundNum(num) {
     // Если плавающей точки нет, возвращаем число как есть
     return numStr;
 }
-

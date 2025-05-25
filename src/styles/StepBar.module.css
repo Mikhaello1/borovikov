@@ -1,0 +1,37 @@
+.stepBar{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    border-bottom: 1px solid black;
+}
+
+.arrow{
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    font-size: 16px;
+}
+
+.arrow:hover{
+    cursor: pointer;
+    background-color: #e0e0e0;
+}
+
+.arrow:disabled{
+    background-color: #e0e0e0;
+}
+
+.arrow:disabled:hover{
+    cursor: not-allowed;
+}
+
+.arrowLeft::before{
+    content: '←';
+    margin-right: 8px;
+}
+
+.arrowRight::after{
+    content: '→';
+    margin-left: 8px;
+}

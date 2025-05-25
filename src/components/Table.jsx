@@ -1,7 +1,7 @@
 import { memo } from "react";
 import styles from "../styles/Table.module.css"
 
-export const Table = memo(({ averages, columnNames, factorData, numColumnAmount, condition }) => {
+export const Table = memo(({ averages, columnNames, columnEI, factorData, numColumnAmount, condition }) => {
 
     return (
         <>
@@ -9,8 +9,8 @@ export const Table = memo(({ averages, columnNames, factorData, numColumnAmount,
                 <thead>
                     <tr>
                         {numColumnAmount && <th>Номер экземпляра контрольной выборки</th>}
-                        <th className={styles.th}>{columnNames[0]} </th>
-                        <th className={styles.th}>{columnNames[1]}</th>
+                        <th style={{fontSize: "16px"}} className={styles.th}>Значение {columnNames[0]}, {columnEI[0] || "??"} </th>
+                        <th style={{fontSize: "16px"}} className={styles.th}>Среднее значение параметра {columnNames[1]} <br/>экземпляров обучающей выборки, {columnEI[1] ?? "??"}</th>
                     </tr>
                 </thead>
                 <tbody>

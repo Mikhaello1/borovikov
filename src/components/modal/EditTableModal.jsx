@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../../styles/EditTableModal.module.css";
 import MyInput from "../UI/MyInput";
-import { setFactorQuantity, setParameterQuantity } from "../../redux/slices/importedDataSlices/quantitiesSlice";
+import { setFactorEI, setFactorQuantity, setParameterEI, setParameterQuantity } from "../../redux/slices/importedDataSlices/quantitiesSlice";
 import { setEducParamPoints, setControlParamPoints } from "../../redux/slices/importedDataSlices/paramValuesSlice";
 import { setFactorPoints } from "../../redux/slices/importedDataSlices/factorValuesSlice";
 import { setWorkTimePoints } from "../../redux/slices/importedDataSlices/workTimeValuesSlice";
@@ -17,6 +17,8 @@ export default function EditTableModal() {
     const controlParamData = useSelector((state) => state.paramData.control);
     const factor = useSelector((state) => state.quantities.factor);
     const parameter = useSelector((state) => state.quantities.parameter);
+    const factorEI = useSelector((state) => state.quantities.factorEI);
+    const parameterEI = useSelector((state) => state.quantities.parameterEI);
 
     const handleControlSample = (event) => {
         const isChecked = event.target.checked;
@@ -86,17 +88,57 @@ export default function EditTableModal() {
 
     return (
         <div>
+            <div style={{ textAlign: "center", fontSize: "30px", marginBottom: "20px" }}>Данные таблицы:</div>
             <div className={styles.inputSection}>
-                <div>
-                    <span style={{ marginRight: "5px" }}>Фактор</span>
-                    <MyInput className={styles.pointsInput} value={factor} onChange={(e) => dispatch(setFactorQuantity(e.target.value))} />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ marginRight: "5px" }}>Наименование фактора</span>
+
+                    <input
+                        style={{ textAlign: "end", width: "60px", height: "25px", fontSize: "20px" }}
+                        type={"text"}
+                        value={factor}
+                        onChange={(e) => dispatch(setFactorQuantity(e.target.value))}
+                    />
                 </div>
-                <div>
-                    <span style={{ marginRight: "5px" }}>Параметр</span>
-                    <MyInput className={styles.pointsInput} value={parameter} onChange={(e) => dispatch(setParameterQuantity(e.target.value))} />
+
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ marginRight: "5px" }}>Наименование параметра</span>
+
+                    <input
+                        style={{ textAlign: "end", width: "60px", height: "25px", fontSize: "20px" }}
+                        type={"text"}
+                        value={parameter}
+                        onChange={(e) => dispatch(setParameterQuantity(e.target.value))}
+                    />
                 </div>
-                <div>
-                    <span style={{ marginRight: "5px" }}>Экземпляров обучающей выборки</span>
+                    
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ marginRight: "5px" }}>Единицы измерения фактора</span>
+
+                    <input
+                        style={{ textAlign: "end", width: "60px", height: "25px", fontSize: "20px" }}
+                        type={"text"}
+                        value={factorEI}
+                        onChange={(e) => dispatch(setFactorEI(e.target.value))}
+                    />
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ marginRight: "5px" }}>Единицы измерения параметра</span>
+
+                    <input
+                        style={{ textAlign: "end", width: "60px", height: "25px", fontSize: "20px" }}
+                        type={"text"}
+                        value={parameterEI}
+                        onChange={(e) => dispatch(setParameterEI(e.target.value))}
+                    />
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ marginRight: "5px" }}>
+                        Количество экземпляров
+                        <br /> обучающей выборки
+                    </div>
                     <MyInput
                         type="number"
                         className={styles.pointsInput}
@@ -105,8 +147,11 @@ export default function EditTableModal() {
                         onChange={(e) => handleChangeNumOfInstances(e.currentTarget.value, setEducParamPoints)}
                     />
                 </div>
-                <div>
-                    <span style={{ marginRight: "5px" }}>Экземпляров контрольной выборки</span>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ marginRight: "5px" }}>
+                        Количество экземпляров
+                        <br /> контрольной выборки
+                    </div>
                     <MyInput
                         type="number"
                         className={styles.pointsInput}
@@ -116,7 +161,7 @@ export default function EditTableModal() {
                     />
                 </div>
                 <div>
-                    <span style={{ marginRight: "5px" }}>Точки фактора</span>
+                    <span style={{ marginRight: "5px" }}>Количество точек фактора</span>
                     <MyInput
                         type="number"
                         className={styles.pointsInput}
@@ -126,7 +171,7 @@ export default function EditTableModal() {
                     />
                 </div>
                 <div>
-                    <span style={{ marginRight: "5px" }}>Точки наработки</span>
+                    <span style={{ marginRight: "5px" }}>Количество точек наработки</span>
                     <MyInput
                         type="number"
                         className={styles.pointsInput}

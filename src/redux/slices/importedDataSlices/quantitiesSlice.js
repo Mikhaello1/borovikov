@@ -4,7 +4,9 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
     factor: "",
-    parameter: ""
+    factorEI: "",
+    parameter: "",
+    parameterEI: ""
 }
 
 const quantitiesSlice = createSlice({
@@ -16,9 +18,15 @@ const quantitiesSlice = createSlice({
         },
         setParameterQuantity: (state, action) => {
             state.parameter = action.payload
+        },
+        setFactorEI: (state, action) => {
+            state.factorEI = action.payload
+        },
+        setParameterEI: (state, action) => {
+            state.parameterEI = action.payload
         }
     }
 })
 
-export const { setFactorQuantity, setParameterQuantity } = quantitiesSlice.actions;
+export const { setFactorQuantity, setParameterQuantity, setFactorEI, setParameterEI } = quantitiesSlice.actions;
 export default quantitiesSlice.reducer;

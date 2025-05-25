@@ -1,7 +1,10 @@
 import regression from "regression";
 import transformPoints from "./transformPoints";
 
+import { functionModels } from "./functionModels";
+
 function simplifyEquation(equationString, parameter, factor) {
+    if(!equationString || !parameter || !factor) return null
     let simplifiedString = equationString.replace(/\+ -/g, '-');
     simplifiedString = simplifiedString.replace(/y/g, parameter);
     simplifiedString = simplifiedString.replace(/x/g, factor);
@@ -52,4 +55,32 @@ export const getModels = (xValues, yValues, parameter, factor) => {
     }));
 
     return processedModels;
+}
+
+export const getModel = (xValues, yValues, parameter, factor, index) => {
+    
+    const data = transformPoints(xValues, yValues);
+
+    const type = index === 0 ? "linear" : index === 1 ? "logarithmic" : index === 2 ? "exponential" : index === 3 && "power";
+
+    let {string, r2, equation} = regression[type](data)
+
+    if (type == "logarithmic") {
+        equation = equation.reverse();
+        string = `y = ${equation[0]} ln(x) + ${equation[1]}`
+        }
+
+    
+
+    return {
+        xQ: factor,
+        yQ: parameter,
+        type, 
+        formula: simplifyEquation(string, parameter, factor),
+        calcValue: function(value){
+            return functionModels[type](...equation, value)
+        },
+        r2,
+        equation
+    }
 }

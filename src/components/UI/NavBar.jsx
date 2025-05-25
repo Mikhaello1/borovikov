@@ -20,7 +20,7 @@ export default function NavBar() {
     const navigationLinks = [
         { path: "/", label: "Ввод данных", isAvailable: true, hasNext: true },
         { path: "/avgValues", label: "Средние значения", isAvailable: avgRoute, hasNext: true },
-        { path: "/recalc", label: "Значения пересчёта", isAvailable: recalcRoute, hasNext: true },
+        { path: "/recalc", label: "Имитационная модель", isAvailable: recalcRoute, hasNext: true },
         { path: "/forecast", label: "Прогнозирование ошибок", isAvailable: forecastRoute, hasNext: false },
     ];
 

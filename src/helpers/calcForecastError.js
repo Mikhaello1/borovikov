@@ -1,3 +1,6 @@
+
+
+
 export default function calcForecastError(forecastValues, trulyValues) {
 
     let tempSum = 0;

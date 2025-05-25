@@ -24,7 +24,7 @@ const MyInput = ({ value: initialValue, onChange, className, type }) => {
 
   return (
     <input
-      style={{textAlign: "end"}}
+      style={{textAlign: "end", fontSize: "20px"}}
       type={type}
       className={className}
       value={value}

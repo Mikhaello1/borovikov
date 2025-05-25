@@ -1,6 +1,5 @@
 const pointsCheck = (pointsData) => {
 
-    console.log(pointsData)
     const tempSet = new Set();
 
     for (let el of pointsData) {
