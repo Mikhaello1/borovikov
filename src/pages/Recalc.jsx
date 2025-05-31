@@ -8,6 +8,14 @@ import { setForecastRouteAvailable } from "../redux/slices/routesSlice.js";
 
 const Recalc = () => {
 
+    function simplifyEquation(equationString, parameter, factor) {
+        if(!equationString || !parameter || !factor) return null
+        let simplifiedString = equationString.replace(/\+ -/g, '-');
+        simplifiedString = simplifiedString.replace(/y/g, parameter);
+        simplifiedString = simplifiedString.replace(/x/g, factor);
+        return simplifiedString;
+    }
+
     const dispatch = useDispatch();
 
     const factor = useSelector(state => state.quantities.factor)
@@ -34,7 +42,7 @@ const Recalc = () => {
                 <div style={{textAlign: "center", margin: "10px", fontSize: "24px"}}>{workTimeMathModel?.formula},&nbsp;&nbsp;(2)</div>
                 <p>&nbsp;&nbsp;&nbsp;&nbsp;Для нахождения функции пересчёта (имитационной модели) {factor}<sub>им</sub> = f(t) необходимо приравнять друг к другу полученные с ипользованием обучающей выборки математические выражения, а затем решить полученное уравнение: {parameter}({factor}) = {parameter}(t) и выразить {factor} от t.</p>
                 <p>&nbsp;&nbsp;&nbsp;&nbsp;Имитационная модель для найденных ранее математических выражений (1), (2) из средних значений параметра {parameter} в зависимости от {factor} и t: </p>
-                <div style={{textAlign: "center", fontSize: "24px"}}>{factor}<sub>им</sub>(t) = {typeof recalcMathModel?.getFormula == "function" ? getExpressionAfterEquals(recalcMathModel?.getFormula()) : "idi nahuy"}</div>
+                <div style={{textAlign: "center", fontSize: "24px"}}>{factor}<sub>им</sub>(t) = {typeof recalcMathModel?.getFormula == "function" ? getExpressionAfterEquals(simplifyEquation(recalcMathModel?.getFormula(), recalcMathModel.yQ, recalcMathModel.xQ)) : "idi nahuy"}</div>
                 <p>&nbsp;&nbsp;&nbsp;&nbsp;Имитационная модель используется для расчёта имитационного значения фактора, которое вызывает примерно такое же изменение параметра, как и заданная наработка t.</p>
             </div>
         </div>

@@ -19,6 +19,8 @@ import EditTableModal from "../components/modal/editTableModal";
 import Modal from "../components/modal/Modal";
 import { setIsEditTableModalOpen } from "../redux/slices/modalsSlice";
 import StepBar from "../components/UI/StepBar";
+import { clearAll } from "../redux/slices/createdModelsSlice";
+import { clearModelsIndexes } from "../redux/slices/chosenModelSlice";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -51,14 +53,16 @@ export default function ImportedDataTable() {
         let newArr = [];
         newArr = new Array(3).fill(null).map(() => [new Array(3).fill(0), new Array(3).fill(0)]);
         dispatch(setParamData({ educ: newArr, control: newArr }));
-
+        dispatch(clearAll())
+        dispatch(clearModelsIndexes())
         dispatch(setFactorPoints(3));
         dispatch(setWorkTimePoints(3));
     };
 
     const handleInputChange = (e, setValue, index, indexInArr) => {
         let newValue = e.currentTarget.value; // Просто получаем значение
-
+        dispatch(clearAll())
+        dispatch(clearModelsIndexes())
         if (newValue.startsWith("0") && newValue.length > 1 && !isNaN(parseInt(newValue.substring(1)))) {
             newValue = newValue.substring(1);
         }

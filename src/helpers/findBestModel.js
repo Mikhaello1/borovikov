@@ -65,10 +65,14 @@ export const getModel = (xValues, yValues, parameter, factor, index) => {
 
     let {string, r2, equation} = regression[type](data)
 
+    
+
     if (type == "logarithmic") {
         equation = equation.reverse();
         string = `y = ${equation[0]} ln(x) + ${equation[1]}`
-        }
+    }
+
+    console.log(equation)
 
     
 

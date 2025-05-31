@@ -4,7 +4,7 @@ import { getModel } from "../helpers/findBestModel";
 
 import roundNum from "../helpers/roundNum";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import MyButton from "../components/UI/MyButton";
 import { MdCancel } from "react-icons/md";
 import { setErrors } from "../redux/slices/forecastErrorsSlice";
@@ -33,7 +33,7 @@ export default function Forecast() {
     const oneTV = useCallback(
         (t, i) => {
             const rowModel = getModel(workTimeValues, controlWorkTimeParamData[i], parameter, "t", workTimeChosenModelIndex);
-
+            console.log(rowModel.formula, rowModel.calcValue(t))
             return rowModel.calcValue(t);
         },
         [workTimeValues, controlWorkTimeParamData, parameter, workTimeChosenModelIndex]
@@ -44,9 +44,10 @@ export default function Forecast() {
             const rowModel = getModel(factorValues, controlFactorParamData[i], parameter, factor, factorChosenModelIndex);
 
             const rowRecalcModel = createRecalcModel(rowModel, getModel(workTimeValues, controlWorkTimeParamData[i], parameter, "t", workTimeChosenModelIndex));
-
+            console.log(rowModel.formula,rowRecalcModel.getFormula())
             const imitationFactor = rowRecalcModel.calcValue(t);
-
+            console.log(imitationFactor)
+            console.log(rowModel.calcValue(imitationFactor))
             return rowModel.calcValue(imitationFactor);
         },
         [factorValues, controlFactorParamData, parameter, factor, factorChosenModelIndex, workTimeValues, workTimeChosenModelIndex]
@@ -76,25 +77,26 @@ export default function Forecast() {
             let sum = 0;
             for (let i = 0; i < controlFactorParamData.length; i++) {
                 sum += Math.pow((oneFV(t, i) - oneTV(t, i)) / oneTV(t, i), 2);
+                console.log(t, oneFV(t, i), oneTV(t, i), sum)
             }
             return (1 / controlFactorParamData.length) * sum;
-        });
+        })
 
         console.log(fen);
 
         setTValuesInTable(tValues);
-        dispatch(setErrors(fen));
+        dispatch(setErrors(fen.map(el => el.toFixed(2))));
     }, [controlFactorParamData, tValues, tValuesInTable]);
 
     let satisfyCondition = useMemo(() => {
         if (forecastErrors) {
             for (let el of forecastErrors) {
-                if (Number(el) <= 3) {
-                    return false;
+                if (Number(el) <= 0.1) {
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }, [forecastErrors]);
 
     return (
@@ -127,7 +129,7 @@ export default function Forecast() {
                     <div>
                         <div>
                             <ForecastErrorTable
-                                averages={forecastErrors.map((value) => roundNum(value * 100) + "%")}
+                                averages={forecastErrors.map((value) => value * 100 + "%")}
                                 columnNames={["t, ч", "Δ"]}
                                 factorData={tValuesInTable}
                                 condition={(x) => Number(x.slice(0, x.length - 1)) <= 10}

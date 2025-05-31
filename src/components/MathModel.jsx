@@ -37,7 +37,6 @@ function MathModel({ xValues, yValues, factorName, setMathModelValue, setGoNext,
     const model = useSelector((state) => state.mathModels[whatModel]);
     const chosenModelIndex = useSelector((state) => state.chosenModel.chosenModelIndex[whatModel]);
 
-    const [availableModels1, setAvailableModels1] = useState([]);
     const [selectedModel, setSelectedModel] = useState(null);
     const [selectedModelIndex, setSelectedModelIndex] = useState(null);
 
@@ -46,24 +45,27 @@ function MathModel({ xValues, yValues, factorName, setMathModelValue, setGoNext,
     const handleModelSelect = (model, index) => {
         setSelectedModelIndex(index);
         setSelectedModel(model);
+        
     };
 
     const handleConfirmModel = (index) => {
         dispatch(setChosenModelIndex({ whatModel, index }));
         dispatch(setMathModelValue(createdModels[index]));
+        console.log(selectedModel.r2)
         setGoNext((prev) => new Set(prev).add(whatModel + selectedModel.formula));
     };
 
     const handleCreateModel = (selectedModelIndex) => {
         const { formula, type, r2, equation, xQ, yQ } = getModel(xValues, yValues, parameter, factor, selectedModelIndex);
-        dispatch(setModel({ modelIndex: selectedModelIndex, whatModel: whatModel2, model: { formula, type, r2, equation, xQ, yQ } }));
+        const equationRounded = equation.map(num => Number(num.toFixed(2)))
+        dispatch(setModel({ modelIndex: selectedModelIndex, whatModel: whatModel2, model: { formula, type, r2, equation: equationRounded, xQ, yQ } }));
     };
 
     useEffect(() => {
         if (!selectedModel?.formula && chosenModelIndex) {
             setSelectedModel(model);
             setSelectedModelIndex(chosenModelIndex);
-            setAvailableModels1(getModels(xValues, yValues, parameter, factor));
+            
         }
     }, []);
 
@@ -112,7 +114,7 @@ function MathModel({ xValues, yValues, factorName, setMathModelValue, setGoNext,
                                     <div>
                                         <div>
                                             <button
-                                                disabled={chosenModelIndex == selectedModelIndex}
+                                                disabled={chosenModelIndex == selectedModelIndex || Number(createdModels[selectedModelIndex].r2) <= 0}
                                                 style={{ padding: "8px 12px", cursor: "pointer", margin: "15px 0 15px 40%", marginLeft: "40%" }}
                                                 onClick={() => handleConfirmModel(selectedModelIndex)}
                                             >
