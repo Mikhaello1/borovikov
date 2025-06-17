@@ -15,12 +15,14 @@ import { useNavigate } from "react-router";
 import MyButton from "../components/UI/MyButton";
 
 import { importDataChecker } from "../helpers/importDataChecker";
-import EditTableModal from "../components/modal/editTableModal";
+import EditTableModal from "../components/modal/EditTableModal";
 import Modal from "../components/modal/Modal";
 import { setIsEditTableModalOpen } from "../redux/slices/modalsSlice";
 import StepBar from "../components/UI/StepBar";
 import { clearAll } from "../redux/slices/createdModelsSlice";
 import { clearModelsIndexes } from "../redux/slices/chosenModelSlice";
+import { clearAllMathModels } from "../redux/slices/mathModelsSlice";
+import { clearRoutes } from "../redux/slices/routesSlice";
 
 export default function ImportedDataTable() {
     const dispatch = useDispatch();
@@ -56,12 +58,17 @@ export default function ImportedDataTable() {
         dispatch(clearAll())
         dispatch(clearModelsIndexes())
         dispatch(setFactorPoints(3));
+        dispatch(clearAllMathModels())
+        dispatch(clearRoutes())
+        dispatch(clearModelsIndexes())
         dispatch(setWorkTimePoints(3));
     };
 
     const handleInputChange = (e, setValue, index, indexInArr) => {
         let newValue = e.currentTarget.value; // Просто получаем значение
         dispatch(clearAll())
+        dispatch(clearAllMathModels())
+        dispatch(clearRoutes())
         dispatch(clearModelsIndexes())
         if (newValue.startsWith("0") && newValue.length > 1 && !isNaN(parseInt(newValue.substring(1)))) {
             newValue = newValue.substring(1);
@@ -75,7 +82,7 @@ export default function ImportedDataTable() {
         <div style={{ position: "relative" }} className={styles.importPage}>
             {educParamData?.length ? (
                 <div className={styles.ImportedDataTable}>
-                    <StepBar nextRoute={"/avgValues"} />
+                    <StepBar nextRoute={"/avgValues"} nextDisabled={!factor || !parameter} backRoute={"/"}/>
                     <Modal isOpen={isEditTableModalOpen} onClose={handleCloseModal}>
                         <EditTableModal />
                     </Modal>
@@ -84,19 +91,19 @@ export default function ImportedDataTable() {
                         Редактировать таблицу
                     </MyButton>
 
-                    <ExcelImporter />
+                    <ExcelImporter isHidden={false}/>
 
                     <table style={{ borderCollapse: "collapse", border: "1px solid black", width: "100vw", textAlign: "center" }}>
                         <thead>
                             <tr>
                                 <td rowSpan={2} style={styles.td}>
-                                    {`Параметр ${parameter || "??"}, ${parameterEI || "??"}`}
+                                    {`Значения параметра ${parameter || "??"}`} {parameterEI ? `, ${parameterEI}` : null}
                                     <br />
                                     для экземпляров объединённой
                                     <br /> выборки
                                 </td>
 
-                                <td colSpan={currencyData.length}>{`${factor}, ${factorEI}` || "??"}</td>
+                                <td colSpan={currencyData.length}>{factor || "??"}{factorEI ? `, ${factorEI}` : null}</td>
                                 <td colSpan={workTimeData.length}>t, ч</td>
                             </tr>
                             <tr>
@@ -119,7 +126,7 @@ export default function ImportedDataTable() {
                             {educParamData.map((row, rowIndex) => (
                                 <tr key={`param-row-${rowIndex}`}>
                                     <td>
-                                        Параметр {parameter} <br /> для {rowIndex + 1}-го экземпляра
+                                        Значение параметра {parameter} <br /> для {rowIndex + 1}-го экземпляра
                                     </td>
                                     {row[0].map((value, columnIndex) => (
                                         <td key={`param-column-${columnIndex}`}>
@@ -152,7 +159,7 @@ export default function ImportedDataTable() {
                                         return (
                                             <tr key={`control-param-row-${rowIndex}`}>
                                                 <td>
-                                                    Параметр {parameter} <br /> для {rowIndex + 1}-го экземпляра
+                                                    Значение параметра {parameter} <br /> для {rowIndex + 1}-го экземпляра
                                                 </td>
                                                 {row[0].map((value, columnIndex) => (
                                                     <td key={`control-param-column-${columnIndex}`}>
@@ -197,22 +204,28 @@ export default function ImportedDataTable() {
                         style={{
                             fontSize: "30px",
                             fontWeight: "bold",
+                            marginBottom: "20px"
                         }}
                     >
-                        Ввод данных
+                        Введите данные
                     </div>
 
+                    
+                    <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                        <div>
+                            <ExcelImporter isHidden={true}/>
+                        </div>
+                        <div>ИЛИ</div>
+                        <div style={{marginLeft: "50px"}}>
+                            <MyButton onClick={handleHandInput} disabled={educParamData.length} style={{fontSize: "26px"}}>
+                                Ручной ввод
+                            </MyButton>
+                        </div>
+                    </div>
+                    <div style={{fontSize: "20px", marginTop: "20px"}}>
+                        При выборе файла excel необходимо, чтобы таблица была ниже приведенного формата, иначе она будет обработана неправильно
+                    </div>
                     <img className={styles.tableFormatImg} src="tableFormat.jpg" alt="формат таблицы" />
-
-                    <div>
-                        <ExcelImporter />
-                    </div>
-                    <div>ИЛИ</div>
-                    <div>
-                        <MyButton onClick={handleHandInput} disabled={educParamData.length}>
-                            Ручной ввод
-                        </MyButton>
-                    </div>
                 </div>
             )}
         </div>

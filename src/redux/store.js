@@ -33,17 +33,21 @@ export const store = configureStore({
                 ignoredActions: [
                     "mathModels/setRecalcMathModel",
                     "mathModels/setFactorMathModel",
-                    "mathModels/setWorkTimeMathModel"
+                    "mathModels/setWorkTimeMathModel",
+                    "createdModels/setModel"
                 ],
                 ignoredActionPaths: [
                     "payload.getFormula",
                     "payload.calcValue", 
+                    "payload.model"
                 ],
                 ignoredPaths: [
                     "mathModels.recalcMathModel.getFormula",
                     "mathModels.recalcMathModel.calcValue", 
                     "mathModels.factorMathModel.calcValue",
                     "mathModels.workTimeMathModel.calcValue",
+                    "createdModels.factorModels",
+                    "createdModels.workTimeModels"
                 ],
             },
         }),

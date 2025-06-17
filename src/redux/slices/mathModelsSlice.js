@@ -18,9 +18,15 @@ const mathModelsSlice = createSlice({
         },
         setRecalcMathModel: (state, action) => {
             state.recalcMathModel = action.payload
+        },
+        clearAllMathModels: (state, action) => {
+            state.factorMathModel = {}
+            state.workTimeMathModel = {}
+            state.recalcMathModel = {}
+
         }
     },
 });
 
-export const { setFactorMathModel, setRecalcMathModel, setWorkTimeMathModel} = mathModelsSlice.actions;
+export const { setFactorMathModel, setRecalcMathModel, setWorkTimeMathModel, clearAllMathModels} = mathModelsSlice.actions;
 export default mathModelsSlice.reducer;

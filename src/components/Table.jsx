@@ -9,8 +9,8 @@ export const Table = memo(({ averages, columnNames, columnEI, factorData, numCol
                 <thead>
                     <tr>
                         {numColumnAmount && <th>Номер экземпляра контрольной выборки</th>}
-                        <th style={{fontSize: "16px"}} className={styles.th}>Значение {columnNames[0]}, {columnEI[0] || "??"} </th>
-                        <th style={{fontSize: "16px"}} className={styles.th}>Среднее значение параметра {columnNames[1]} <br/>экземпляров обучающей выборки, {columnEI[1] ?? "??"}</th>
+                        <th style={{fontSize: "16px"}} className={styles.th}>Значение {columnNames[0]}{columnEI[0] ? `, ${columnEI[0]}` : null} </th>
+                        <th style={{fontSize: "16px"}} className={styles.th}>Среднее значение параметра {columnNames[1]} <br/>экземпляров обучающей выборки{columnEI[1] ? `, ${columnEI[1]}` : null}</th>
                     </tr>
                 </thead>
                 <tbody>

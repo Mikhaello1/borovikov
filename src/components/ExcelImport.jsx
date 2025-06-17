@@ -2,9 +2,12 @@ import { useDispatch } from "react-redux";
 import { setFactorData } from "../redux/slices/importedDataSlices/factorValuesSlice.js";
 import { setWorkTimeData } from "../redux/slices/importedDataSlices/workTimeValuesSlice.js";
 import { setParamData } from "../redux/slices/importedDataSlices/paramValuesSlice.js";
+import styles from "../styles/ExcelImporter.module.css";
 import * as XLSX from "xlsx";
+import { div } from "numeric";
+import MyButton from "./UI/MyButton.jsx";
 
-const ExcelImporter = () => {
+const ExcelImporter = ({isHidden}) => {
     const dispatch = useDispatch();
 
     const handleFileUpload = (event) => {
@@ -21,6 +24,39 @@ const ExcelImporter = () => {
 
             const { currencyData, workTimeData, paramData } = processTableData(jsonData);
 
+            console.log(paramData)
+
+            if(currencyData.length > 7) {
+                paramData.educ[0][0].length = 7
+                paramData.educ[1][0].length = 7
+                paramData.control[0][0].length = 7
+                paramData.control[1][0].length = 7
+                currencyData.length = 7;
+
+            }
+            if(workTimeData.length > 7){
+                paramData.educ[0][1].length = 7
+                paramData.educ[1][1].length = 7
+                paramData.control[0][1].length = 7
+                paramData.control[1][1].length = 7
+                workTimeData.length = 7;
+            }
+            if(currencyData.length < 3) {
+                paramData.educ[0][0].length = 3
+                paramData.educ[1][0].length = 3
+                paramData.control[0][0].length = 3
+                paramData.control[1][0].length = 3
+                currencyData.length = 3;
+
+            }
+            if(workTimeData.length < 3){
+                paramData.educ[0][1].length = 3
+                paramData.educ[1][1].length = 3
+                paramData.control[0][1].length = 3
+                paramData.control[1][1].length = 3
+                workTimeData.length = 3;
+            }
+            
 
             currencyData.length && dispatch(setFactorData(currencyData));
             workTimeData.length && dispatch(setWorkTimeData(workTimeData));
@@ -144,9 +180,21 @@ const ExcelImporter = () => {
         return { currencyData, workTimeData, paramData };
     };
 
-    return (
+        return (
         <>
-            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+            {isHidden ? 
+                <label htmlFor="file-upload" className={styles.customFileUpload}>
+                    Выбрать файл excel
+                </label> : null
+            }
+            <input
+                id="file-upload"
+                className={isHidden ? styles.excelImporter : undefined}
+                type="file"
+                accept=".xlsx, .xls"
+                onChange={handleFileUpload}
+                style={isHidden ? { display: "none" } : undefined} // Скрываем стандартный input
+            />
         </>
     );
 };

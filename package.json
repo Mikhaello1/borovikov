@@ -13,7 +13,7 @@
     "start": "electron .",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron:start\"",
     "electron:start": "wait-on tcp:5173 && electron .",
-    "electron:build": "vite build && electron-builder"
+    "electron:build": "electron-builder"
   },
   "build": {
     "appId": "borovikov.app.bsuir",
@@ -28,7 +28,7 @@
       "node_modules/**/*",
       "package.json"
     ],
-    "nsis":{
+    "nsis": {
       "uninstallDisplayName": "Uninstall this app",
       "oneClick": "false",
       "license": "license.txt",
@@ -65,7 +65,7 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
-    "electron": "^34.5.6",
+    "electron": "^14.0.1",
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",

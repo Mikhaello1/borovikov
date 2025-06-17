@@ -7,6 +7,8 @@ import { setEducParamPoints, setControlParamPoints } from "../../redux/slices/im
 import { setFactorPoints } from "../../redux/slices/importedDataSlices/factorValuesSlice";
 import { setWorkTimePoints } from "../../redux/slices/importedDataSlices/workTimeValuesSlice";
 import { setParamData } from "../../redux/slices/importedDataSlices/paramValuesSlice";
+import MyButton from "../UI/MyButton";
+import { setIsEditTableModalOpen } from "../../redux/slices/modalsSlice";
 
 export default function EditTableModal() {
     const dispatch = useDispatch();
@@ -33,15 +35,24 @@ export default function EditTableModal() {
         }
     };
 
+    const handleEnter = () => {
+        dispatch(setIsEditTableModalOpen(false));
+    }
+
     const handleChangeNumOfInstances = (value, setValue) => {
         let newValue = value;
         newValue ||= 1;
         dispatch(setValue({ newLength: newValue, numOfFactorPoints: currencyData.length, numOfWorkTimePoints: workTimeData.length }));
+                dispatch(clearAll())
+                dispatch(clearAllMathModels())
+                dispatch(clearRoutes())
+                dispatch(clearModelsIndexes())
     };
     const handleChangeNumOfPoints = (value, setValue, indexInRow) => {
         let newValue = value;
         newValue ||= 1;
-
+        if(newValue > 7) newValue = 7;
+        if(newValue < 3) newValue = 3;
         let newEducParamData = educParamData.map((row, rowIndex) => {
             let newRow = [...row];
 
@@ -82,6 +93,10 @@ export default function EditTableModal() {
                 control: newControlParamData,
             })
         );
+                dispatch(clearAll())
+                dispatch(clearAllMathModels())
+                dispatch(clearRoutes())
+                dispatch(clearModelsIndexes())
 
         dispatch(setValue(newValue));
     };
@@ -91,7 +106,7 @@ export default function EditTableModal() {
             <div style={{ textAlign: "center", fontSize: "30px", marginBottom: "20px" }}>Данные таблицы:</div>
             <div className={styles.inputSection}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ marginRight: "5px" }}>Наименование фактора</span>
+                    <span style={{ marginRight: "5px" }}>Обозначение величины фактора</span>
 
                     <input
                         style={{ textAlign: "end", width: "60px", height: "25px", fontSize: "20px" }}
@@ -102,7 +117,7 @@ export default function EditTableModal() {
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ marginRight: "5px" }}>Наименование параметра</span>
+                    <span style={{ marginRight: "5px" }}>Обозначение величины параметра</span>
 
                     <input
                         style={{ textAlign: "end", width: "60px", height: "25px", fontSize: "20px" }}
@@ -185,7 +200,9 @@ export default function EditTableModal() {
                     <input type="checkbox" checked={controlParamData.length > 0} onChange={(e) => handleControlSample(e)} />
                     Наличие контрольной выборки
                 </div>
+                <MyButton onClick={handleEnter}>Подтвердить</MyButton>
             </div>
+            
         </div>
     );
 }

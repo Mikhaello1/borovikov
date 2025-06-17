@@ -11,15 +11,21 @@ import { setErrors } from "../redux/slices/forecastErrorsSlice";
 import { ForecastErrorTable } from "../components/ForecastErorrTable/ForecastErrorTable";
 
 import createRecalcModel from "../helpers/recalcModel";
+import { customRound } from "../helpers/customRound";
 
 export default function Forecast() {
-    const [tValues, setTValues] = useState([12000, 15000, 18000, 21000]);
+    const [tValues, setTValues] = useState([1200, 1500, 1800 ]);
     const [tValuesInTable, setTValuesInTable] = useState([]);
 
     const dispatch = useDispatch();
 
+    const factorMathModel = useSelector((state) => state.mathModels.factorMathModel);
+    const workTimeMathModel = useSelector((state) => state.mathModels.workTimeMathModel);
+    const recalcMathModel = useSelector((state) => state.mathModels.recalcMathModel);
+
     const workTimeValues = useSelector((state) => state.workTimeData.values);
     const controlParamData = useSelector((state) => state.paramData.control);
+    const educParamData = useSelector(state => state.paramData.educ)
     const factorValues = useSelector((state) => state.factorData.values);
     const forecastErrors = useSelector((state) => state.forecastErrors.errors);
     const factor = useSelector((state) => state.quantities.factor);
@@ -29,26 +35,51 @@ export default function Forecast() {
 
     let controlWorkTimeParamData = controlParamData.map((row) => row[1]);
     let controlFactorParamData = controlParamData.map((row) => row[0]);
+    let educWorkTimeParamData = educParamData.map((row) => row[1]);
+    let educFactorParamData = educParamData.map((row) => row[0]);
 
     const oneTV = useCallback(
         (t, i) => {
-            const rowModel = getModel(workTimeValues, controlWorkTimeParamData[i], parameter, "t", workTimeChosenModelIndex);
-            console.log(rowModel.formula, rowModel.calcValue(t))
-            return rowModel.calcValue(t);
+                    //     let factorParamData;
+        // if(controlFactorParamData.length > 0){
+        //     factorParamData = controlFactorParamData;
+        //      workTimeParamData = controlWorkTimeParamData;
+        // }else{
+        //     factorParamData = educFactorParamData;
+        //      workTimeParamData = educWorkTimeParamData;
+        // }
+            // const rowModel = getModel(workTimeValues, workTimeParamData[i], parameter, "t", workTimeChosenModelIndex);
+            
+            // return rowModel.calcValue(t);
+
+////////////////////////////////
+
+            return workTimeMathModel.calcValue(t);
         },
         [workTimeValues, controlWorkTimeParamData, parameter, workTimeChosenModelIndex]
     );
 
     const oneFV = useCallback(
         (t, i) => {
-            const rowModel = getModel(factorValues, controlFactorParamData[i], parameter, factor, factorChosenModelIndex);
+        //     let factorParamData;
+        // if(controlFactorParamData.length > 0){
+        //     factorParamData = controlFactorParamData;
+        //      workTimeParamData = controlWorkTimeParamData;
+        // }else{
+        //     factorParamData = educFactorParamData;
+        //      workTimeParamData = educWorkTimeParamData;
+        // }
+            // const rowModel = getModel(factorValues, factorParamData[i], parameter, factor, factorChosenModelIndex);
 
-            const rowRecalcModel = createRecalcModel(rowModel, getModel(workTimeValues, controlWorkTimeParamData[i], parameter, "t", workTimeChosenModelIndex));
-            console.log(rowModel.formula,rowRecalcModel.getFormula())
-            const imitationFactor = rowRecalcModel.calcValue(t);
-            console.log(imitationFactor)
-            console.log(rowModel.calcValue(imitationFactor))
-            return rowModel.calcValue(imitationFactor);
+            // const rowRecalcModel = createRecalcModel(rowModel, getModel(workTimeValues, workTimeParamData[i], parameter, "t", workTimeChosenModelIndex));
+            
+            // const imitationFactor = rowRecalcModel.calcValue(t);
+            // return rowModel.calcValue(imitationFactor)
+
+/////////////////////////////////////////
+
+            const imitationFactor = recalcMathModel.calcValue(t);
+            return factorMathModel.calcValue(imitationFactor);
         },
         [factorValues, controlFactorParamData, parameter, factor, factorChosenModelIndex, workTimeValues, workTimeChosenModelIndex]
     );
@@ -56,7 +87,6 @@ export default function Forecast() {
     const handleTValueChange = useCallback(
         (value, index) => {
             let newValue = value;
-            newValue ||= 1;
             let newTValues = [...tValues];
             newTValues[index] = +newValue;
             setTValues(newTValues);
@@ -73,35 +103,41 @@ export default function Forecast() {
     };
 
     const handleCalcError = useCallback(() => {
-        const fen = tValues.map((t) => {
+        let factorParamData;
+        if(controlFactorParamData.length > 0){
+            factorParamData = controlFactorParamData;
+        }else{
+            factorParamData = educFactorParamData;
+        }
+        
+        
+        const tValuesToCalc = tValues.map(num => Number(num) === 0 ? 0.000000001 : Number(num))
+        const fen = tValuesToCalc.map((t) => {
             let sum = 0;
-            for (let i = 0; i < controlFactorParamData.length; i++) {
+            for (let i = 0; i < factorParamData.length; i++) {
                 sum += Math.pow((oneFV(t, i) - oneTV(t, i)) / oneTV(t, i), 2);
-                console.log(t, oneFV(t, i), oneTV(t, i), sum)
             }
-            return (1 / controlFactorParamData.length) * sum;
-        })
-
-        console.log(fen);
-
+            return (1 / factorParamData.length) * sum;
+        }).map(num => customRound(num))
+        console.log(fen)
         setTValuesInTable(tValues);
-        dispatch(setErrors(fen.map(el => el.toFixed(2))));
-    }, [controlFactorParamData, tValues, tValuesInTable]);
+        dispatch(setErrors(fen.map(el => el.toFixed(3))));
+    }, [controlFactorParamData, tValues, tValuesInTable, educFactorParamData]);
 
     let satisfyCondition = useMemo(() => {
         if (forecastErrors) {
             for (let el of forecastErrors) {
-                if (Number(el) <= 0.1) {
-                    return true;
+                if (Number(el) >= 0.1 || isNaN(el)) {
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }, [forecastErrors]);
 
     return (
         <div style={{ display: "flex", height: "90vh" }}>
-            <div style={{ display: "flex", flexDirection: "column", borderRight: "1px solid black", padding: "0 10px" }}>
+            <div style={{ display: "flex", flexDirection: "column", borderRight: "1px solid black", padding: "0 10px", minWidth: "350px" }}>
                 <h3>При каких значениях t провести проверку?</h3>
                 <div style={{ height: "60vh", overflow: "auto", paddingTop: "15px", paddingBottom: "50px" }}>
                     {tValues.map((value, index) => {
@@ -113,6 +149,7 @@ export default function Forecast() {
                                     style={{ textAlign: "end", height: "25px", fontSize: "20px", width: "150px", marginLeft: "5px" }}
                                     value={value}
                                     onChange={(e) => handleTValueChange(e.target.value, index)}
+                                    type="number"
                                 />
                                 <MdCancel onClick={() => handleDeleteCheck(index)} style={{ marginLeft: "10px", height: "20px", width: "20px" }} />
                             </div>
@@ -126,18 +163,22 @@ export default function Forecast() {
             </div>
             <div style={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 {tValuesInTable?.length && forecastErrors?.length ? (
-                    <div>
+                    <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                         <div>
                             <ForecastErrorTable
-                                averages={forecastErrors.map((value) => value * 100 + "%")}
-                                columnNames={["t, ч", "Δ"]}
+                                averages={forecastErrors.map((value) => customRound(value * 100))}
+                                columnNames={["t, ч", "Δ, %"]}
                                 factorData={tValuesInTable}
-                                condition={(x) => Number(x.slice(0, x.length - 1)) <= 10}
+                                condition={(x) => Number(x) <= 10}
                             />
+                            {!satisfyCondition ? <MyButton style={{marginTop: "10pxз"}} text={"Ввести другие данные"} onClick={() => location.reload(true)} /> : null}
                         </div>
                         {!satisfyCondition ? (
                             <div style={{ marginTop: "10px" }}>
-                                <MyButton text={"Ввести другие данные"} onClick={() => location.reload(true)} />
+                                
+                                <div style={{fontSize: "20px", margin: "0 20px", marginTop: "10px"}}>
+                                    Функция пересчета (имитационная модель) является пригодной для выполнения прогнозирования значений параметра {parameter} в случае, если ошибка прогнозирования этого параметра для рассмотренных значений наработок t составляет менее 10%
+                                </div>
                             </div>
                         ) : null}
                     </div>

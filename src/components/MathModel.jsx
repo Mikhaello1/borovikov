@@ -4,6 +4,7 @@ import { getModel, getModels } from "../helpers/findBestModel";
 import { setChosenModelIndex } from "../redux/slices/chosenModelSlice";
 
 import { setModel } from "../redux/slices/createdModelsSlice";
+import { customRound } from "../helpers/customRound";
 
 function MathModel({ xValues, yValues, factorName, setMathModelValue, setGoNext, parameter, factor }) {
     const whatModel = factorName == "ток коллектора" ? "factorMathModel" : factorName == "наработка" ? "workTimeMathModel" : "recalcMathModel";
@@ -51,14 +52,16 @@ function MathModel({ xValues, yValues, factorName, setMathModelValue, setGoNext,
     const handleConfirmModel = (index) => {
         dispatch(setChosenModelIndex({ whatModel, index }));
         dispatch(setMathModelValue(createdModels[index]));
-        console.log(selectedModel.r2)
+        console.log(createdModels[index])
         setGoNext((prev) => new Set(prev).add(whatModel + selectedModel.formula));
     };
 
     const handleCreateModel = (selectedModelIndex) => {
-        const { formula, type, r2, equation, xQ, yQ } = getModel(xValues, yValues, parameter, factor, selectedModelIndex);
-        const equationRounded = equation.map(num => Number(num.toFixed(2)))
-        dispatch(setModel({ modelIndex: selectedModelIndex, whatModel: whatModel2, model: { formula, type, r2, equation: equationRounded, xQ, yQ } }));
+        
+        const { formula, type, r2, equation, xQ, yQ, calcValue } = getModel(xValues, yValues, parameter, factor, selectedModelIndex);
+        const roundedEq = equation.map(num => customRound(num));
+        
+        dispatch(setModel({ modelIndex: selectedModelIndex, whatModel: whatModel2, model: { formula, type, r2, equation: roundedEq, xQ, yQ, calcValue } }));
     };
 
     useEffect(() => {
@@ -114,7 +117,7 @@ function MathModel({ xValues, yValues, factorName, setMathModelValue, setGoNext,
                                     <div>
                                         <div>
                                             <button
-                                                disabled={chosenModelIndex == selectedModelIndex || Number(createdModels[selectedModelIndex].r2) <= 0}
+                                                disabled={chosenModelIndex == selectedModelIndex || Number(createdModels[selectedModelIndex].r2) < 0.85}
                                                 style={{ padding: "8px 12px", cursor: "pointer", margin: "15px 0 15px 40%", marginLeft: "40%" }}
                                                 onClick={() => handleConfirmModel(selectedModelIndex)}
                                             >
@@ -124,7 +127,7 @@ function MathModel({ xValues, yValues, factorName, setMathModelValue, setGoNext,
                                         <div style={{ fontSize: "18px", textAlign: "justify" }}>
                                             Коэффициент детерминации R<sup>2</sup> (R-квадрат) является статистической мерой, с помощью которой можно определить, насколько модель
                                             соответствует данным, на которых она построена. Чем ближе R<sup>2</sup> к единице, тем модель точнее. Коэффициент детерминации
-                                            изменяется в диапазоне от −∞ до 1. Рекомендуется использовать модель со значением R<sup>2</sup> ≥ 0,85.
+                                            изменяется в диапазоне от 0 до 1. Рекомендуется использовать модель со значением R<sup>2</sup> ≥ 0,85.
                                         </div>
                                     </div>
                                 ) : null}

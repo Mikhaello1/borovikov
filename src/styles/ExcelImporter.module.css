@@ -1,0 +1,9 @@
+.customFileUpload {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #21ff19;
+    color: white; /* Цвет текста */
+    border-radius: 20px; /* Скругление углов */
+    margin-right: 30px;
+    
+}

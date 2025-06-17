@@ -23,9 +23,14 @@ const routesSlice = createSlice({
         setForecastRouteAvailable: (state, action) => {
 
             state.forecastRoute = action.payload;
+        },
+        clearRoutes: (state, action) => {
+            
+            state.recalcRoute = false;
+            state.forecastRoute = false;
         }
     }
 })
 
-export const { setAvgRouteAvailable, setForecastRouteAvailable, setRecalcRouteAvailable } = routesSlice.actions;
+export const { setAvgRouteAvailable, setForecastRouteAvailable, setRecalcRouteAvailable, clearRoutes } = routesSlice.actions;
 export default routesSlice.reducer;

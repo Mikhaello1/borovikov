@@ -12,14 +12,14 @@ export default function NavBar() {
 
     useEffect(() => {
         if (!hasRedirected) {
-            navigate("/");
+            navigate("/importData");
             setHasRedirected(true);
         }
     }, [hasRedirected, navigate]);
 
     const navigationLinks = [
-        { path: "/", label: "Ввод данных", isAvailable: true, hasNext: true },
-        { path: "/avgValues", label: "Средние значения", isAvailable: avgRoute, hasNext: true },
+        { path: "/importData", label: "Ввод данных", isAvailable: true, hasNext: true },
+        { path: "/avgValues", label: "Создание моделей", isAvailable: avgRoute, hasNext: true },
         { path: "/recalc", label: "Имитационная модель", isAvailable: recalcRoute, hasNext: true },
         { path: "/forecast", label: "Прогнозирование ошибок", isAvailable: forecastRoute, hasNext: false },
     ];

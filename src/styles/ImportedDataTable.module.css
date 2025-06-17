@@ -5,6 +5,7 @@ table{
 td{
     border: 1px solid black;
     padding: 10px;
+    
 }
 
 .ImportedDataTable{
@@ -15,7 +16,7 @@ td{
 .tableInput{
     border: none;
     height: 30px;
-    max-width: 100px;
+    max-width: 50px;
     padding: 0;
     font-size: 20px
 }
@@ -45,5 +46,9 @@ td{
     left: 50%; 
     transform: translate(-50%, -50%); 
 
+}
+
+.tableFormatImg{
+    width: 800px
 }
 

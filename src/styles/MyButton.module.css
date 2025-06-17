@@ -5,6 +5,7 @@
     color: white;
     border-radius: 20px;
     border: none;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .MyButton:disabled{

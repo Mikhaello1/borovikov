@@ -2,6 +2,8 @@ import regression from "regression";
 import transformPoints from "./transformPoints";
 
 import { functionModels } from "./functionModels";
+import { precision } from "numeric";
+import { customRound } from "./customRound";
 
 function simplifyEquation(equationString, parameter, factor) {
     if(!equationString || !parameter || !factor) return null
@@ -58,22 +60,29 @@ export const getModels = (xValues, yValues, parameter, factor) => {
 }
 
 export const getModel = (xValues, yValues, parameter, factor, index) => {
+    let xVal = xValues.map(num => Number(num) === 0 ? num = 0.000001 : num)
+    let yVal = yValues.map(num => Number(num) === 0 ? num = 0.000001 : num)
+    xVal = xVal.map(num => Number(num))
+    yVal = yVal.map(num => Number(num))
     
-    const data = transformPoints(xValues, yValues);
+    const data = transformPoints(xVal, yVal);
+    
 
     const type = index === 0 ? "linear" : index === 1 ? "logarithmic" : index === 2 ? "exponential" : index === 3 && "power";
 
-    let {string, r2, equation} = regression[type](data)
+    let {string, r2, equation} = regression[type](data, {precision: 10})
 
+    let roundedEquation = equation.map(num => customRound(num))
     
-
+    if(type == "linear") string = `y = ${roundedEquation[0]}⋅x + ${roundedEquation[1]}`
+    if(type == "exponential") string = `y = ${roundedEquation[0]}⋅e^(${roundedEquation[1]}⋅x)`
+    if(type == "power") string = `y = ${roundedEquation[0]}⋅x^(${roundedEquation[1]})`
     if (type == "logarithmic") {
-        equation = equation.reverse();
-        string = `y = ${equation[0]} ln(x) + ${equation[1]}`
+        
+        roundedEquation = roundedEquation.reverse();
+        string = `y = ${roundedEquation[0]}⋅ln(x) + ${roundedEquation[1]}`
+        
     }
-
-    console.log(equation)
-
     
 
     return {
@@ -82,9 +91,9 @@ export const getModel = (xValues, yValues, parameter, factor, index) => {
         type, 
         formula: simplifyEquation(string, parameter, factor),
         calcValue: function(value){
-            return functionModels[type](...equation, value)
+            return functionModels[type](...this.equation, value)
         },
-        r2,
-        equation
+        r2: customRound(r2),
+        equation: roundedEquation
     }
 }
